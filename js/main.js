@@ -2,12 +2,12 @@
 
 var COUNT_OF_OBJECTS = 8;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-var TYPES_POPUP = {
+/* var TYPES_POPUP = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
   'bungalo': 'Бунгало'
-};
+};*/
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -18,11 +18,23 @@ var ROOMS_MIN = 1;
 var ROOMS_MAX = 3;
 var GUESTS_MIN = 1;
 var GUESTS_MAX = 3;
+var GUESTS = {
+  'for 1 guest': '1',
+  'for 2 guests': '2',
+  'for 3 guests': '3',
+  'not for guests': '0'
+};
+var ROOMS = {
+  '1 room': '1',
+  '2 rooms': '2',
+  '3 rooms': '3',
+  '100 rooms': '100'
+};
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 50;
 var PIN_HEIGHT = 70;
-var arrayAdverts = [];
+var adverts = [];
 
 // Вычисляет случайное число от min до max
 var getRandomNumber = function (min, max) {
@@ -69,16 +81,111 @@ var getAvatarCount = function (count) {
 // Создает массив объявлений
 var createArrayAdverts = function () {
   for (var i = 0; i < COUNT_OF_OBJECTS; i++) {
-    arrayAdverts.push(generateAdverts(i));
+    adverts.push(generateAdverts(i));
   }
-  return arrayAdverts;
+  return adverts;
 };
 
-// Переводит карту в активное состояние
+// Активация страницы
+var pinActive = document.querySelector('.map__pin--main');
 var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var form = document.querySelector('.ad-form');
+var fieldsets = form.querySelectorAll('fieldset');
+var address = document.querySelector('#address');
 
 
+// Добавляет атрибут disabled полям формы (блокирование полей формы)
+var addDisabledAttribute = function (field) {
+  for (var i = 0; i < field.length; i++) {
+    field[i].setAttribute('disabled', 'disabled');
+  }
+};
+
+addDisabledAttribute(fieldsets);
+
+// Удаляет атрибут disabled полям формы
+var removeDisabledAttribute = function (field) {
+  for (var i = 0; i < field.length; i++) {
+    field[i].removeAttribute('disabled');
+  }
+};
+
+// Добавляет координаты адреса
+var fillAddress = function () {
+  address.value = Math.round((pinActive.getBoundingClientRect().x + 20)) + ', ' + Math.round((pinActive.getBoundingClientRect().y + 44));
+};
+
+fillAddress();
+
+// Переводит страницу в активное состояние
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
+  createArrayAdverts();
+  removeDisabledAttribute(fieldsets);
+  pinActive.removeEventListener('mouseup', activatePage);
+  // Добавляет метки на карту
+  for (var j = 0; j < COUNT_OF_OBJECTS; j++) {
+    var createArray = createArrayAdverts();
+    pinsFragment.appendChild(generatePins(createArray[j]));
+  }
+  pins.appendChild(pinsFragment);
+};
+
+// Обработчик для активации страницы левой (основной) кнопкой мыши
+pinActive.addEventListener('mouseup', function (evt) {
+  if (evt.button === 0) {
+    activatePage();
+  }
+});
+
+// Обработчик для активации страницы с клавиатуры клавишей enter
+pinActive.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    activatePage();
+  }
+});
+
+// Проверка валидации формы
+var rooms = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+
+// Функция проверки соответствия количества гостей количеству комнат
+var validateRoomsGuests = function () {
+  capacity.setCustomValidity('');
+  if (rooms.value === ROOMS['1 room']) {
+    if (capacity.value === GUESTS['for 2 guests'] || capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 1-ой комнате может быть 1 гость');
+      rooms.setCustomValidity('В 1-ой комнате может быть 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['2 rooms']) {
+    if (capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
+      rooms.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['3 rooms']) {
+    if (capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
+      rooms.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['100 rooms']) {
+    if (capacity.value !== GUESTS['not for guests']) {
+      capacity.setCustomValidity('100 комнат не для гостей');
+      rooms.setCustomValidity('100 комнат не для гостей');
+    }
+  }
+};
+
+rooms.addEventListener('change', validateRoomsGuests);
+capacity.addEventListener('change', validateRoomsGuests);
+
+// Создание меток на карте
 var pins = document.querySelector('.map__pins');
 var pinsTemplate = document.querySelector('#pin').content.querySelector('button');
 var pinsFragment = document.createDocumentFragment();
@@ -96,21 +203,13 @@ var generatePins = function (add) {
   return pin;
 };
 
-// Добавляет метки на карту
-for (var j = 0; j < COUNT_OF_OBJECTS; j++) {
-  var createArray = createArrayAdverts();
-  pinsFragment.appendChild(generatePins(createArray[j]));
-}
-
-pins.appendChild(pinsFragment);
-
 // Карточка объявления
-var cardsTemplate = document.querySelector('#card')
+/* var cardsTemplate = document.querySelector('#card')
   .content
-  .querySelector('.map__card');
+  .querySelector('.map__card');*/
 
 // Создает карточку объявления
-var createCard = function (adv) {
+/* var createCard = function (adv) {
   var cardBlock = cardsTemplate.cloneNode(true);
 
   cardBlock.querySelector('.popup__title').textContent = adv.offer.title;
@@ -146,4 +245,4 @@ var createCard = function (adv) {
 };
 
 // Добавляет карточку объявления на страницу
-document.querySelector('.map__filters-container').before(createCard(createArrayAdverts[0]));
+document.querySelector('.map__filters-container').before(createCard(createArrayAdverts[0]));*/
