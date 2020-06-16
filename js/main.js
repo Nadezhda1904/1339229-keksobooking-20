@@ -1,13 +1,18 @@
 'use strict';
 
 var COUNT_OF_OBJECTS = 8;
+var MAP_WIDTH = document.querySelector('.map').offsetWidth;
+var MAP_HEIGHT = document.querySelector('.map').offsetHeight;
+var MAP_PIN_BTN_WIDTH = document.querySelector('.map__pin--main').offsetWidth;
+var MAP_PIN_BTN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
+var MAP_PIN_CURSOR_HEIGHT = 22;
 var TYPES = ['palace', 'flat', 'house', 'bungalo'];
-/* var TYPES_POPUP = {
+var TYPES_POPUP = {
   'palace': 'Дворец',
   'flat': 'Квартира',
   'house': 'Дом',
   'bungalo': 'Бунгало'
-};*/
+};
 var FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
 var PHOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
 var CHECKIN = ['12:00', '13:00', '14:00'];
@@ -30,6 +35,26 @@ var ROOMS = {
   '3 rooms': '3',
   '100 rooms': '100'
 };
+
+var OFFER_TYPES = {
+  bungalo: {
+    translate: 'Бунгало',
+    minPrice: 0
+  },
+  flat: {
+    translate: 'Квартира',
+    minPrice: 1000
+  },
+  house: {
+    translate: 'Дом',
+    minPrice: 5000
+  },
+  palace: {
+    translate: 'Дворец',
+    minPrice: 10000
+  }
+};
+
 var LOCATION_Y_MIN = 130;
 var LOCATION_Y_MAX = 630;
 var PIN_WIDTH = 50;
@@ -86,7 +111,6 @@ var createArrayAdverts = function () {
   return adverts;
 };
 
-// Активация страницы
 var pinActive = document.querySelector('.map__pin--main');
 var map = document.querySelector('.map');
 var form = document.querySelector('.ad-form');
@@ -110,106 +134,25 @@ var removeDisabledAttribute = function (field) {
   }
 };
 
-// Добавляет координаты адреса
-var fillAddress = function () {
-  address.value = Math.round((pinActive.getBoundingClientRect().x + 20)) + ', ' + Math.round((pinActive.getBoundingClientRect().y + 44));
+// Добавляет координаты адреса на неактивню страницу
+var getAddressNoActive = function () {
+  address.value = Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2) + ', ' + Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2);
 };
 
-fillAddress();
+getAddressNoActive();
 
-// Переводит страницу в активное состояние
-var activatePage = function () {
-  map.classList.remove('map--faded');
-  form.classList.remove('ad-form--disabled');
-  createArrayAdverts();
-  removeDisabledAttribute(fieldsets);
-  pinActive.removeEventListener('mouseup', activatePage);
-  // Добавляет метки на карту
-  for (var j = 0; j < COUNT_OF_OBJECTS; j++) {
-    var createArray = createArrayAdverts();
-    pinsFragment.appendChild(generatePins(createArray[j]));
-  }
-  pins.appendChild(pinsFragment);
-};
-
-// Обработчик для активации страницы левой (основной) кнопкой мыши
-pinActive.addEventListener('mouseup', function (evt) {
-  if (evt.button === 0) {
-    activatePage();
-  }
-});
-
-// Обработчик для активации страницы с клавиатуры клавишей enter
-pinActive.addEventListener('keydown', function (evt) {
-  if (evt.key === 'Enter') {
-    activatePage();
-  }
-});
-
-// Проверка валидации формы
-var rooms = document.querySelector('#room_number');
-var capacity = document.querySelector('#capacity');
-
-// Функция проверки соответствия количества гостей количеству комнат
-var validateRoomsGuests = function () {
-  capacity.setCustomValidity('');
-  if (rooms.value === ROOMS['1 room']) {
-    if (capacity.value === GUESTS['for 2 guests'] || capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
-      capacity.setCustomValidity('В 1-ой комнате может быть 1 гость');
-      rooms.setCustomValidity('В 1-ой комнате может быть 1 гость');
-    }
-  }
-
-  if (rooms.value === ROOMS['2 rooms']) {
-    if (capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
-      capacity.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
-      rooms.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
-    }
-  }
-
-  if (rooms.value === ROOMS['3 rooms']) {
-    if (capacity.value === GUESTS['not for guests']) {
-      capacity.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
-      rooms.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
-    }
-  }
-
-  if (rooms.value === ROOMS['100 rooms']) {
-    if (capacity.value !== GUESTS['not for guests']) {
-      capacity.setCustomValidity('100 комнат не для гостей');
-      rooms.setCustomValidity('100 комнат не для гостей');
-    }
-  }
-};
-
-rooms.addEventListener('change', validateRoomsGuests);
-capacity.addEventListener('change', validateRoomsGuests);
-
-// Создание меток на карте
-var pins = document.querySelector('.map__pins');
-var pinsTemplate = document.querySelector('#pin').content.querySelector('button');
-var pinsFragment = document.createDocumentFragment();
-
-// Генерирует метки карты
-var generatePins = function (add) {
-  var pin = pinsTemplate.cloneNode(true);
-
-  pin.style.left = add.location.x - PIN_WIDTH / 2 + 'px';
-  pin.style.top = add.location.y - PIN_HEIGHT + 'px';
-
-  pin.querySelector('img').src = add.author.avatar;
-  pin.querySelector('img').alt = add.offer.title;
-
-  return pin;
+// Добавляет координаты адреса на активню страницу
+var getAddressActive = function () {
+  address.value = Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2) + ', ' + Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2 + MAP_PIN_CURSOR_HEIGHT);
 };
 
 // Карточка объявления
-/* var cardsTemplate = document.querySelector('#card')
+var cardsTemplate = document.querySelector('#card')
   .content
-  .querySelector('.map__card');*/
+  .querySelector('.map__card');
 
 // Создает карточку объявления
-/* var createCard = function (adv) {
+var createCard = function (template, adv) {
   var cardBlock = cardsTemplate.cloneNode(true);
 
   cardBlock.querySelector('.popup__title').textContent = adv.offer.title;
@@ -244,5 +187,151 @@ var generatePins = function (add) {
   return cardBlock;
 };
 
-// Добавляет карточку объявления на страницу
-document.querySelector('.map__filters-container').before(createCard(createArrayAdverts[0]));*/
+var createArray = createArrayAdverts();
+
+// Попап
+var popup;
+var popupClose;
+
+// Закрывает попап
+var closePopup = function () {
+  popup.remove();
+
+  popupClose.removeEventListener('click', closePopup);
+  popupClose.removeEventListener('keydown', onPopupEnterPress);
+  document.removeEventListener('keydown', onPopupEscPress);
+};
+
+var onPopupEscPress = function (evt) {
+  if (evt.key === 'Escape') {
+    closePopup();
+  }
+};
+
+var onPopupEnterPress = function (evt) {
+  if (evt.key === 'Enter') {
+    closePopup();
+  }
+};
+
+// Открывает попап (показывает объявление)
+var openPopup = function (ad) {
+  if (popup) {
+    closePopup();
+  }
+  popup = pins.insertAdjacentElement('afterEnd', createCard(cardsTemplate, ad));
+  popupClose = popup.querySelector('.popup__close');
+  popupClose.addEventListener('click', closePopup);
+  popupClose.addEventListener('keydown', onPopupEnterPress);
+  document.addEventListener('keydown', onPopupEscPress);
+};
+
+// Создание меток на карте
+var pins = document.querySelector('.map__pins');
+var pinsTemplate = document.querySelector('#pin').content.querySelector('button');
+var pinsFragment = document.createDocumentFragment();
+
+// Генерирует метки карты
+var generatePins = function (add) {
+  var pin = pinsTemplate.cloneNode(true);
+
+  pin.style.left = add.location.x - PIN_WIDTH / 2 + 'px';
+  pin.style.top = add.location.y - PIN_HEIGHT + 'px';
+
+  pin.querySelector('img').src = add.author.avatar;
+  pin.querySelector('img').alt = add.offer.title;
+  // Обработчик для показа объявления по клику на пин
+  pin.addEventListener('click', function () {
+    openPopup(add);
+  });
+
+  return pin;
+};
+
+// Переводит страницу в активное состояние
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  form.classList.remove('ad-form--disabled');
+  createArrayAdverts();
+  getAddressActive();
+  removeDisabledAttribute(fieldsets);
+  pinActive.removeEventListener('mouseup', activatePage);
+  // Добавляет метки на карту
+  for (var j = 0; j < COUNT_OF_OBJECTS; j++) {
+    pinsFragment.appendChild(generatePins(createArray[j]));
+  }
+  pins.appendChild(pinsFragment);
+};
+
+// Обработчик для активации страницы левой (основной) кнопкой мыши
+pinActive.addEventListener('mouseup', function (evt) {
+  if (evt.button === 0) {
+    activatePage();
+  }
+});
+
+// Обработчик для активации страницы с клавиатуры клавишей enter
+pinActive.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    activatePage();
+  }
+});
+
+// Проверка валидации формы
+var rooms = document.querySelector('#room_number');
+var capacity = document.querySelector('#capacity');
+
+// Функция проверки соответствия количества гостей количеству комнат
+var validateRoomsGuests = function () {
+  capacity.setCustomValidity('');
+  rooms.setCustomValidity('');
+  if (rooms.value === ROOMS['1 room']) {
+    if (capacity.value === GUESTS['for 2 guests'] || capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 1-ой комнате может быть 1 гость');
+      rooms.setCustomValidity('В 1-ой комнате может быть 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['2 rooms']) {
+    if (capacity.value === GUESTS['for 3 guests'] || capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
+      rooms.setCustomValidity('В 2-х комнатах может быть 2 гостя или 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['3 rooms']) {
+    if (capacity.value === GUESTS['not for guests']) {
+      capacity.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
+      rooms.setCustomValidity('В 3-х комнатах может быть 3 гостя, 2 гостя или 1 гость');
+    }
+  }
+
+  if (rooms.value === ROOMS['100 rooms']) {
+    if (capacity.value !== GUESTS['not for guests']) {
+      capacity.setCustomValidity('100 комнат не для гостей');
+      rooms.setCustomValidity('100 комнат не для гостей');
+    }
+  }
+};
+
+rooms.addEventListener('change', validateRoomsGuests);
+capacity.addEventListener('change', validateRoomsGuests);
+
+// Определение минимальной цены соответствующему типу жилья
+var adForm = document.querySelector('.ad-form');
+var typeOfHousing = adForm.querySelector('select[name="type"]');
+var priceOfHousing = adForm.querySelector('input[name="price"]');
+
+var validateMinPriceOfHousing = function () {
+  var type = OFFER_TYPES[typeOfHousing.value];
+  priceOfHousing.placeholder = type.minPrice;
+  priceOfHousing.min = type.minPrice;
+};
+
+typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
+
+// Определение соответствия времени въезда выезду
+adForm.onchange = function (evt) {
+  this.timein.value = evt.target.value;
+  this.timeout.value = evt.target.value;
+};
