@@ -23,11 +23,7 @@ var activatePage = function () {
   window.form.toggleDisabledAttribute(false, window.form.fieldsets);
   window.data.pinActive.removeEventListener('mouseup', onPinActiveMouse);
   window.data.pinActive.removeEventListener('mouseup', onPinActiveEnter);
-  // Добавляет метки на карту
-  for (var j = 0; j < window.data.COUNT_OF_OBJECTS; j++) {
-    window.pins.pinsFragment.appendChild(window.pins.generatePins(window.card.createArray[j]));
-  }
-  window.map.pins.appendChild(window.pins.pinsFragment);
+  window.pins.addPins();
 };
 
 // Обработчик для активации страницы левой (основной) кнопкой мыши

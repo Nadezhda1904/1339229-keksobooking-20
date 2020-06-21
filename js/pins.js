@@ -26,9 +26,18 @@
     return pin;
   };
 
+  // Добавляет метки на карту
+  var addPins = function () {
+    for (var j = 0; j < window.data.COUNT_OF_OBJECTS; j++) {
+      pinsFragment.appendChild(generatePins(window.card.createArray[j]));
+    }
+    window.map.pins.appendChild(pinsFragment);
+  };
+
   window.pins = {
     generatePins: generatePins,
-    pinsFragment: pinsFragment
+    pinsFragment: pinsFragment,
+    addPins: addPins
   };
 
 })();

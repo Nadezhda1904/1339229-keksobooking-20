@@ -97,6 +97,7 @@
   };
 
   window.data = {
+    COUNT_OF_OBJECTS: COUNT_OF_OBJECTS,
     TYPES_POPUP: TYPES_POPUP,
     OFFER_TYPES: OFFER_TYPES,
     pinActive: pinActive,
