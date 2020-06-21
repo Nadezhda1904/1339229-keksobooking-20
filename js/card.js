@@ -28,33 +28,30 @@
     return cardBlock;
   };
 
-  var renderFeature = function (template, ad) {
-    for (var i = 0; i < ad.offer.features.length; i++) {
-      if (ad.offer.features.length === 0) {
+  var renderFeature = function (template, adv) {
+    for (var i = 0; i < adv.offer.features.length; i++) {
+      if (adv.offer.features.length === 0) {
         template.querySelector('.popup__features').style = 'display: none';
       } else {
         var cardBlockFeature = document.createElement('li');
-        cardBlockFeature.classList.add('popup__feature', 'popup__feature--' + ad.offer.features[i]);
+        cardBlockFeature.classList.add('popup__feature', 'popup__feature--' + adv.offer.features[i]);
         template.querySelector('.popup__features').append(cardBlockFeature);
       }
     }
   };
 
-  var renderPhotos = function (template, ad) {
-    for (var i = 0; i < ad.offer.photos.length; i++) {
+  var renderPhotos = function (template, adv) {
+    for (var i = 0; i < adv.offer.photos.length; i++) {
       var cardBlockPhoto = document.createElement('img');
-      cardBlockPhoto.src = ad.offer.photos[i];
+      cardBlockPhoto.src = adv.offer.photos[i];
       cardBlockPhoto.width = 45;
       cardBlockPhoto.height = 40;
       template.querySelector('.popup__photos').appendChild(cardBlockPhoto);
     }
   };
 
-  var createArray = window.data.createArrayAdverts();
-
   window.card = {
-    createCard: createCard,
-    createArray: createArray,
+    createCard: createCard
   };
 
 })();

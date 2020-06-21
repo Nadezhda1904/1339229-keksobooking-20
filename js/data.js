@@ -2,6 +2,7 @@
 
 (function () {
   var COUNT_OF_OBJECTS = 8;
+  var COUNT_OF_AVATAR = 8;
   var TYPES = ['palace', 'flat', 'house', 'bungalo'];
   var TYPES_POPUP = {
     palace: 'Дворец',
@@ -41,7 +42,7 @@
 
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
-  var adverts = [];
+  // var adverts = [];
 
   var pinActive = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
@@ -52,48 +53,31 @@
   };
 
   // Создает один объект(данные объявления)
-  var generateAdverts = function (count) {
+  var generateAdverts = function () {
     var advertsData = {
-      'author': {
-        'avatar': getAvatarCount(count)
+      author: {
+        avatar: 'img/avatars/user0' + getRandomNumber(1, COUNT_OF_AVATAR) + '.png'
       },
 
-      'offer': {
-        'title': 'Заголовок объявления',
-        'address': getRandomNumber(0, map.offsetWidth) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
-        'price': getRandomNumber(PRICE_MIN, PRICE_MAX),
-        'type': TYPES[getRandomNumber(0, TYPES.length - 1)],
-        'rooms': getRandomNumber(ROOMS_MIN, ROOMS_MAX),
-        'guests': getRandomNumber(GUESTS_MIN, GUESTS_MAX),
-        'checkin': CHECKIN[getRandomNumber(0, CHECKIN.length - 1)],
-        'checkout': CHECKOUT[getRandomNumber(0, CHECKOUT.length - 1)],
-        'features': FEATURES,
-        'description': 'Описание объявления',
-        'photos': PHOTOS
+      offer: {
+        title: 'Заголовок объявления',
+        address: getRandomNumber(0, map.offsetWidth) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
+        price: getRandomNumber(PRICE_MIN, PRICE_MAX),
+        type: TYPES[getRandomNumber(0, TYPES.length - 1)],
+        rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
+        guests: getRandomNumber(GUESTS_MIN, GUESTS_MAX),
+        checkin: CHECKIN[getRandomNumber(0, CHECKIN.length - 1)],
+        checkout: CHECKOUT[getRandomNumber(0, CHECKOUT.length - 1)],
+        features: FEATURES,
+        description: 'Описание объявления',
+        photos: PHOTOS
       },
-      'location': {
-        'x': getRandomNumber(0, map.offsetWidth),
-        'y': getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
+      location: {
+        x: getRandomNumber(0, map.offsetWidth),
+        y: getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     };
     return advertsData;
-  };
-
-  var getAvatarCount = function (count) {
-    var avatarNumber = '0' + (count + 1);
-    if (count <= COUNT_OF_OBJECTS - 1) {
-      return 'img/avatars/user' + avatarNumber + '.png';
-    } else {
-      return false;
-    }
-  };
-
-  // Создает массив объявлений
-  var createArrayAdverts = function () {
-    for (var i = 0; i < COUNT_OF_OBJECTS; i++) {
-      adverts.push(generateAdverts(i));
-    }
-    return adverts;
   };
 
   window.data = {
@@ -102,7 +86,7 @@
     OFFER_TYPES: OFFER_TYPES,
     pinActive: pinActive,
     map: map,
-    createArrayAdverts: createArrayAdverts
+    generateAdverts: generateAdverts
   };
 
 })();

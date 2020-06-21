@@ -4,9 +4,9 @@
 var deactivatePage = function () {
   window.data.map.classList.add('map--faded');
   window.form.adForm.classList.add('ad-form--disabled');
-  window.form.renderAdress(false);
+  window.form.renderAddress(false);
   window.form.toggleDisabledAttribute(true, window.form.fieldsets);
-  document.addEventListener('keydown', onPinActiveEnter);
+  document.addEventListener('keydown', onPinActiveMouseEnter);
 };
 
 var resetButton = document.querySelector('.ad-form__reset');
@@ -18,28 +18,17 @@ resetButton.addEventListener('click', function () {
 var activatePage = function () {
   window.data.map.classList.remove('map--faded');
   window.form.adForm.classList.remove('ad-form--disabled');
-  window.data.createArrayAdverts();
-  window.form.renderAdress(true);
+  window.form.renderAddress(true);
   window.form.toggleDisabledAttribute(false, window.form.fieldsets);
-  window.data.pinActive.removeEventListener('mouseup', onPinActiveMouse);
-  window.data.pinActive.removeEventListener('mouseup', onPinActiveEnter);
+  window.data.pinActive.removeEventListener('mouseup', onPinActiveMouseEnter);
   window.pins.addPins();
 };
 
-// Обработчик для активации страницы левой (основной) кнопкой мыши
-var onPinActiveMouse = function (evt) {
-  if (evt.button === 0) {
+// Обработчик для активации страницы левой (основной) кнопкой мыши или с клавиатуры клавишей enter
+var onPinActiveMouseEnter = function (evt) {
+  if (evt.button === 0 || evt.key === 'Enter') {
     activatePage();
   }
 };
 
-window.data.pinActive.addEventListener('mouseup', onPinActiveMouse);
-
-// Обработчик для активации страницы с клавиатуры клавишей enter
-var onPinActiveEnter = function (evt) {
-  if (evt.key === 'Enter') {
-    activatePage();
-  }
-};
-
-window.data.pinActive.addEventListener('keydown', onPinActiveEnter);
+window.data.pinActive.addEventListener('mouseup', onPinActiveMouseEnter);
