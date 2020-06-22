@@ -44,21 +44,25 @@
   toggleDisabledAttribute(true, fieldsets);
 
   // Добавляет координаты адреса на страницу
-  function renderAddress(isPageActive) {
+  var location = {
+    x: Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2),
+    y: Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2)
+  };
+
+  function renderAddress(isPageActive, coord) {
     if (isPageActive) {
-      address.value = Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2) + ', ' + Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2 + MAP_PIN_CURSOR_HEIGHT);
+      address.value = coord.x + ', ' + (coord.y + MAP_PIN_CURSOR_HEIGHT);
     } else {
-      address.value = Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2) + ', ' + Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2);
+      address.value = coord.x + ', ' + coord.y;
     }
   }
-  renderAddress(false);
+  renderAddress(false, location);
 
   // Проверка валидации формы
   var rooms = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
 
   // Функция проверки соответствия количества гостей количеству комнат
-
   capacity.setCustomValidity('');
   rooms.setCustomValidity('');
   var validateRoomsGuests = function () {
@@ -92,9 +96,16 @@
   };
 
   window.form = {
+    MAP_PIN_BTN_WIDTH: MAP_PIN_BTN_WIDTH,
+    MAP_PIN_BTN_HEIGHT: MAP_PIN_BTN_HEIGHT,
+    MAP_PIN_CURSOR_HEIGHT: MAP_PIN_CURSOR_HEIGHT,
+    MAP_WIDTH: MAP_WIDTH,
+    MAP_HEIGHT: MAP_HEIGHT,
+    location: location,
     adForm: adForm,
     fieldsets: fieldsets,
+    address: address,
     renderAddress: renderAddress,
-    toggleDisabledAttribute: toggleDisabledAttribute,
+    toggleDisabledAttribute: toggleDisabledAttribute
   };
 })();

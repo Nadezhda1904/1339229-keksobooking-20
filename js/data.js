@@ -42,7 +42,6 @@
 
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
-  // var adverts = [];
 
   var pinActive = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
