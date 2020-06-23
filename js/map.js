@@ -25,7 +25,6 @@
     if (card) {
       closeCard();
     }
-    // console.log(window.cardAdverts.createCard(ad));
     card = pins.insertAdjacentElement('afterEnd', window.card.createCard(ad));
     cardClose = card.querySelector('.popup__close');
     cardClose.addEventListener('click', closeCard);
@@ -34,6 +33,7 @@
 
   window.map = {
     pins: pins,
-    openCard: openCard
+    openCard: openCard,
+    closeCard: closeCard
   };
 })();

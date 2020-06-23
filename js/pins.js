@@ -27,11 +27,31 @@
   };
 
   // Добавляет метки на карту
-  var addPins = function () {
+  /* var addPins = function () {
     for (var j = 0; j < window.data.COUNT_OF_OBJECTS; j++) {
       pinsFragment.appendChild(generatePin(window.data.generateAdverts()));
     }
     window.map.pins.appendChild(pinsFragment);
+  };*/
+
+  // Добавляет метки, загруженные с сервера, на карту
+  var successHandler = function (adverts) {
+    for (var j = 0; j < adverts.length; j++) {
+      pinsFragment.appendChild(generatePin(adverts[j]));
+    }
+    window.map.pins.appendChild(pinsFragment);
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
   };
 
   var removePins = function () {
@@ -46,7 +66,9 @@
     PIN_HEIGHT: PIN_HEIGHT,
     generatePin: generatePin,
     pinsFragment: pinsFragment,
-    addPins: addPins,
+    successHandler: successHandler,
+    errorHandler: errorHandler,
+    // addPins: addPins,
     removePins: removePins
   };
 
