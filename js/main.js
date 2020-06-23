@@ -8,7 +8,7 @@ var deactivatePage = function () {
   window.form.toggleDisabledAttribute(true, window.form.fieldsets);
   document.addEventListener('keydown', onPinActiveMouseEnter);
   window.pins.removePins();
-  window.form.removeMapCard();
+  window.map.closeCard();
 };
 
 var resetButton = document.querySelector('.ad-form__reset');
@@ -23,7 +23,8 @@ var activatePage = function () {
   window.form.renderAddress(true, window.form.location);
   window.form.toggleDisabledAttribute(false, window.form.fieldsets);
   window.data.pinActive.removeEventListener('mouseup', onPinActiveMouseEnter);
-  window.pins.addPins();
+  // window.pins.addPins();
+  window.load(window.pins.successHandler, window.pins.errorHandler);
 };
 
 // Обработчик для активации страницы левой (основной) кнопкой мыши или с клавиатуры клавишей enter
