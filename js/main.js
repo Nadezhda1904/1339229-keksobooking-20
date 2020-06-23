@@ -4,9 +4,11 @@
 var deactivatePage = function () {
   window.data.map.classList.add('map--faded');
   window.form.adForm.classList.add('ad-form--disabled');
-  window.form.renderAddress(false);
+  window.form.renderAddress(false, window.form.location);
   window.form.toggleDisabledAttribute(true, window.form.fieldsets);
   document.addEventListener('keydown', onPinActiveMouseEnter);
+  window.pins.removePins();
+  window.form.removeMapCard();
 };
 
 var resetButton = document.querySelector('.ad-form__reset');
@@ -18,7 +20,7 @@ resetButton.addEventListener('click', function () {
 var activatePage = function () {
   window.data.map.classList.remove('map--faded');
   window.form.adForm.classList.remove('ad-form--disabled');
-  window.form.renderAddress(true);
+  window.form.renderAddress(true, window.form.location);
   window.form.toggleDisabledAttribute(false, window.form.fieldsets);
   window.data.pinActive.removeEventListener('mouseup', onPinActiveMouseEnter);
   window.pins.addPins();

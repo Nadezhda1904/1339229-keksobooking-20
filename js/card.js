@@ -50,8 +50,15 @@
     }
   };
 
+  var removeMapCard = function () {
+    if (createCard) {
+      createCard.remove();
+    }
+  };
+
   window.card = {
-    createCard: createCard
+    createCard: createCard,
+    removeMapCard: removeMapCard
   };
 
 })();

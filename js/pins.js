@@ -34,10 +34,20 @@
     window.map.pins.appendChild(pinsFragment);
   };
 
+  var removePins = function () {
+    var mapPinsItems = document.querySelectorAll('.map__pin:not(.map__pin--main)');
+    mapPinsItems.forEach(function (it) {
+      it.remove();
+    });
+  };
+
   window.pins = {
+    PIN_WIDTH: PIN_WIDTH,
+    PIN_HEIGHT: PIN_HEIGHT,
     generatePin: generatePin,
     pinsFragment: pinsFragment,
-    addPins: addPins
+    addPins: addPins,
+    removePins: removePins
   };
 
 })();
