@@ -45,8 +45,8 @@
 
   // Добавляет координаты адреса на страницу
   var location = {
-    x: Math.round((MAP_WIDTH + MAP_PIN_BTN_WIDTH) / 2),
-    y: Math.round((MAP_HEIGHT + MAP_PIN_BTN_HEIGHT) / 2)
+    x: Math.round(window.data.pinActive.offsetLeft + MAP_PIN_BTN_WIDTH / 2),
+    y: Math.round(window.data.pinActive.offsetTop + MAP_PIN_BTN_HEIGHT / 2)
   };
 
   function renderAddress(isPageActive, coord) {
@@ -58,16 +58,89 @@
   }
   renderAddress(false, location);
 
+  // Сообщение об успехе/ошибке отправки формы
+  var messageSuccessTmpl = document.querySelector('#success').content.querySelector('.success');
+  var messageSuccess = messageSuccessTmpl.cloneNode(true);
+  var messageErrorTmpl = document.querySelector('#error').content.querySelector('.error');
+  var messageError = messageErrorTmpl.cloneNode(true);
+
+  var addformMessage = function (message) {
+    document.body.appendChild(message);
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onDocumentEscape);
+  };
+
+  // Сообщение об успешной отправке формы
+  /* var formMessageSuccess = function () {
+    var messageSuccessTmpl = document.querySelector('#success').content.querySelector('.success');
+    var messageSuccess = messageSuccessTmpl.cloneNode(true);
+    document.body.appendChild(messageSuccess);
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onDocumentEscape);
+  };
+
+  // Сообщение об ошибке отправки формы
+  var formMessageError = function () {
+    var messageErrorTmpl = document.querySelector('#error').content.querySelector('.error');
+    var messageError = messageErrorTmpl.cloneNode(true);
+    document.body.appendChild(messageError);
+    document.addEventListener('click', onDocumentClick);
+    document.addEventListener('keydown', onDocumentEscape);
+  };*/
+
+  var removeformMessage = function () {
+    document.querySelector('.message').remove();
+    document.removeEventListener('click', onDocumentClick);
+    document.removeEventListener('keydown', onDocumentEscape);
+  };
+
+  // Обработчик удаления сообщений по клику на документ
+  var onDocumentClick = function (evt) {
+    evt.preventDefault();
+    if (evt.button === 0) {
+      removeformMessage();
+    }
+  };
+
+  // Обработчик удаления сообщений по по клику на Escape
+  var onDocumentEscape = function (evt) {
+    evt.preventDefault();
+    if (evt.key === 'Escape') {
+      removeformMessage();
+    }
+  };
+
+  // Отправка формы
+  var onSubmitSendForm = function (evt) {
+    evt.preventDefault();
+    window.upload(new FormData(adForm),
+        function () {
+          addformMessage(messageSuccess);
+          window.main.deactivatePage();
+        },
+        function () {
+          addformMessage(messageError);
+        });
+  };
+
+  adForm.addEventListener('submit', onSubmitSendForm);
+
+  // Очистка формы
+  var resetButton = document.querySelector('.ad-form__reset');
+  resetButton.addEventListener('click', function () {
+    window.main.deactivatePage();
+  });
+
   // Проверка валидации формы
   var rooms = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
 
   // Функция проверки соответствия количества гостей количеству комнат
-  capacity.setCustomValidity('');
-  rooms.setCustomValidity('');
   var validateRoomsGuests = function () {
+    capacity.setCustomValidity('');
+    rooms.setCustomValidity('');
     var validValue = countOfGuestsInRoom[rooms.value].guestsValue.find(function (number) {
-      return number === capacity.value;
+      return number === Number(capacity.value);
     });
     return validValue ? true : (
       capacity.setCustomValidity(countOfGuestsInRoom[rooms.value].error),
@@ -90,9 +163,12 @@
   typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
 
   // Определение соответствия времени въезда выезду
-  adForm.onchange = function (evt) {
-    this.timein.value = evt.target.value;
-    this.timeout.value = evt.target.value;
+  var timeForm = document.querySelector('.ad-form__element--time');
+  var timeIn = document.querySelector('#timein');
+  var timeOut = document.querySelector('#timeout');
+  timeForm.onchange = function (evt) {
+    timeIn.value = evt.target.value;
+    timeOut.value = evt.target.value;
   };
 
   window.form = {
@@ -106,6 +182,12 @@
     fieldsets: fieldsets,
     address: address,
     renderAddress: renderAddress,
-    toggleDisabledAttribute: toggleDisabledAttribute
+    toggleDisabledAttribute: toggleDisabledAttribute,
+    // formMessageSuccess: formMessageSuccess,
+    // formMessageError: formMessageError
+    // messageSuccess: messageSuccess,
+    // messageError: messageError,
+    // addformMessage: addformMessage
   };
+
 })();
