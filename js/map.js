@@ -8,14 +8,23 @@
 
   // Закрывает попап
   var closeCard = function () {
-    card.remove();
+    if (card) {
+      card.remove();
 
-    cardClose.removeEventListener('click', closeCard);
-    document.removeEventListener('keydown', onCardEscEnterPress);
+      cardClose.removeEventListener('click', closeCard);
+      document.removeEventListener('keydown', onCardEscPress);
+      document.removeEventListener('keydown', onCardEnterPress);
+    }
   };
 
-  var onCardEscEnterPress = function (evt) {
-    if (evt.key === 'Escape' || evt.key === 'Enter') {
+  var onCardEscPress = function (evt) {
+    if (evt.key === 'Escape') {
+      closeCard();
+    }
+  };
+
+  var onCardEnterPress = function (evt) {
+    if (evt.key === 'Enter') {
       closeCard();
     }
   };
@@ -28,7 +37,8 @@
     card = pins.insertAdjacentElement('afterEnd', window.card.createCard(ad));
     cardClose = card.querySelector('.popup__close');
     cardClose.addEventListener('click', closeCard);
-    document.addEventListener('keydown', onCardEscEnterPress);
+    document.addEventListener('keydown', onCardEscPress);
+    document.removeEventListener('keydown', onCardEnterPress);
   };
 
   window.map = {
