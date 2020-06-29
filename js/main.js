@@ -26,7 +26,7 @@
     window.form.toggleDisabledAttribute(false, window.form.fieldsets);
     window.data.pinActive.removeEventListener('mouseup', onPinActiveMouse);
     window.data.pinActive.removeEventListener('mouseup', onPinActiveEnter);
-    window.load(window.pins.successHandler, window.pins.errorHandler);
+    window.load(window.pins.onSuccessAddPins, window.pins.onErrorAddPins);
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
