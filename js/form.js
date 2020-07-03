@@ -29,15 +29,19 @@
   var adForm = document.querySelector('.ad-form');
   var fieldsets = adForm.querySelectorAll('fieldset');
   var address = document.querySelector('#address');
+  var adFormSubmit = adForm.querySelector('.ad-form__submit');
+  var fields = adForm.querySelectorAll('input, select');
 
   // Добавляет/удаляет атрибут disabled полям формы (блокирование полей формы)
   var toggleDisabledAttribute = function (isPageNotActive, field) {
-    for (var i = 0; i < field.length; i++) {
-      if (isPageNotActive) {
-        field[i].setAttribute('disabled', 'disabled');
-      } else {
-        field[i].removeAttribute('disabled');
-      }
+    if (isPageNotActive) {
+      field.forEach(function (it) {
+        it.setAttribute('disabled', 'disabled');
+      });
+    } else {
+      field.forEach(function (it) {
+        it.removeAttribute('disabled');
+      });
     }
   };
 
@@ -45,8 +49,8 @@
 
   // Добавляет координаты адреса на страницу
   var location = {
-    x: Math.round(window.data.pinActive.offsetLeft + MAP_PIN_BTN_WIDTH / 2),
-    y: Math.round(window.data.pinActive.offsetTop + MAP_PIN_BTN_HEIGHT / 2)
+    x: Math.round(window.data.mainPin.offsetLeft + MAP_PIN_BTN_WIDTH / 2),
+    y: Math.round(window.data.mainPin.offsetTop + MAP_PIN_BTN_HEIGHT / 2)
   };
 
   function renderAddress(isPageActive, coord) {
@@ -57,6 +61,13 @@
     }
   }
   renderAddress(false, location);
+
+  // Функция добавления класса ошибки на невалидные поля
+  var validateFormFields = function (formFields) {
+    formFields.forEach(function (item) {
+      item.classList.toggle('error-form', !item.validity.valid);
+    });
+  };
 
   // Сообщение об успехе/ошибке отправки формы
   var messageSuccessTmpl = document.querySelector('#success').content.querySelector('.success');
@@ -69,24 +80,6 @@
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('keydown', onDocumentEscape);
   };
-
-  // Сообщение об успешной отправке формы
-  /* var formMessageSuccess = function () {
-    var messageSuccessTmpl = document.querySelector('#success').content.querySelector('.success');
-    var messageSuccess = messageSuccessTmpl.cloneNode(true);
-    document.body.appendChild(messageSuccess);
-    document.addEventListener('click', onDocumentClick);
-    document.addEventListener('keydown', onDocumentEscape);
-  };
-
-  // Сообщение об ошибке отправки формы
-  var formMessageError = function () {
-    var messageErrorTmpl = document.querySelector('#error').content.querySelector('.error');
-    var messageError = messageErrorTmpl.cloneNode(true);
-    document.body.appendChild(messageError);
-    document.addEventListener('click', onDocumentClick);
-    document.addEventListener('keydown', onDocumentEscape);
-  };*/
 
   var removeformMessage = function () {
     document.querySelector('.message').remove();
@@ -120,6 +113,7 @@
         },
         function () {
           addformMessage(messageError);
+          validateFormFields(fields);
         });
   };
 
@@ -134,6 +128,7 @@
   // Проверка валидации формы
   var rooms = document.querySelector('#room_number');
   var capacity = document.querySelector('#capacity');
+
 
   // Функция проверки соответствия количества гостей количеству комнат
   var validateRoomsGuests = function () {
@@ -183,11 +178,7 @@
     address: address,
     renderAddress: renderAddress,
     toggleDisabledAttribute: toggleDisabledAttribute,
-    // formMessageSuccess: formMessageSuccess,
-    // formMessageError: formMessageError
-    // messageSuccess: messageSuccess,
-    // messageError: messageError,
-    // addformMessage: addformMessage
+    adFormSubmit: adFormSubmit,
   };
 
 })();

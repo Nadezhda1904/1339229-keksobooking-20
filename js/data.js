@@ -43,7 +43,7 @@
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
 
-  var pinActive = document.querySelector('.map__pin--main');
+  var mainPin = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
 
   // Вычисляет случайное число от min до max
@@ -83,7 +83,7 @@
     COUNT_OF_OBJECTS: COUNT_OF_OBJECTS,
     TYPES_POPUP: TYPES_POPUP,
     OFFER_TYPES: OFFER_TYPES,
-    pinActive: pinActive,
+    mainPin: mainPin,
     map: map,
     generateAdverts: generateAdverts
   };

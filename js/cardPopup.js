@@ -6,15 +6,19 @@
   var cardClose;
   var pins = document.querySelector('.map__pins');
 
-  // Закрывает попап
-  var closeCard = function () {
+  // Удаляет карту
+  var removeCard = function () {
     if (card) {
       card.remove();
-
-      cardClose.removeEventListener('click', closeCard);
-      document.removeEventListener('keydown', onCardEscPress);
-      document.removeEventListener('keydown', onCardEnterPress);
     }
+  };
+
+  // Закрывает попап
+  var closeCard = function () {
+    removeCard();
+    cardClose.removeEventListener('click', closeCard);
+    document.removeEventListener('keydown', onCardEscPress);
+    document.removeEventListener('keydown', onCardEnterPress);
   };
 
   var onCardEscPress = function (evt) {
@@ -34,15 +38,16 @@
     if (card) {
       closeCard();
     }
-    card = pins.insertAdjacentElement('afterEnd', window.card.createCard(ad));
+    card = pins.insertAdjacentElement('afterEnd', window.cardRender.createCard(ad));
     cardClose = card.querySelector('.popup__close');
     cardClose.addEventListener('click', closeCard);
     document.addEventListener('keydown', onCardEscPress);
-    document.removeEventListener('keydown', onCardEnterPress);
+    document.addEventListener('keydown', onCardEnterPress);
   };
 
-  window.map = {
+  window.cardPopup = {
     pins: pins,
+    removeCard: removeCard,
     openCard: openCard,
     closeCard: closeCard
   };
