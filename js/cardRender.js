@@ -50,7 +50,7 @@
     }
   };
 
-  window.card = {
+  window.cardRender = {
     createCard: createCard,
   };
 

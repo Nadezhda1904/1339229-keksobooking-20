@@ -6,8 +6,19 @@
   var PIN_HEIGHT = 70;
 
   var pinsFragment = document.createDocumentFragment();
-
   var pinsTemplate = document.querySelector('#pin').content.querySelector('button');
+
+  var removeActiveClassPin = function () {
+    var activePin = document.querySelector('.map__pin--active');
+    if (activePin) {
+      activePin.classList.remove('map__pin--active');
+    }
+  };
+
+  var addActiveClassPin = function (pin) {
+    removeActiveClassPin();
+    pin.classList.add('map__pin--active');
+  };
 
   // Генерирует метку карты
   var generatePin = function (add) {
@@ -20,7 +31,8 @@
     pin.querySelector('img').alt = add.offer.title;
     // Обработчик для показа объявления по клику на пин
     pin.addEventListener('click', function () {
-      window.map.openCard(add);
+      window.cardPopup.openCard(add);
+      addActiveClassPin(pin);
     });
 
     return pin;
@@ -28,18 +40,18 @@
 
   // Добавляет метки, загруженные с сервера, на карту
   var addPins = function (adverts) {
-    for (var j = 0; j < adverts.length; j++) {
-      pinsFragment.appendChild(generatePin(adverts[j]));
-    }
-    window.map.pins.appendChild(pinsFragment);
+    adverts.forEach(function (adv) {
+      pinsFragment.appendChild(generatePin(adv));
+    });
+    window.cardPopup.pins.appendChild(pinsFragment);
   };
 
   window.ads = [];
 
-  function onSuccessAddPins(pins) {
+  var onSuccessAddPins = function (pins) {
     window.ads = pins;
     addPins(window.ads.slice(0, window.filters.MAX_PIN_ON_MAP_QUANTITY));
-  }
+  };
 
   var onErrorAddPins = function (errorMessage) {
     var node = document.createElement('div');

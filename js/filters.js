@@ -20,7 +20,6 @@
     }
   };
 
-
   var filterForm = document.querySelector('.map__filters');
   var filterFieldset = filterForm.querySelector('fieldset');
   var filterSelect = filterForm.querySelectorAll('select');
@@ -32,34 +31,45 @@
 
   // Добавляет/удаляет атрибут disabled полям фильтра (блокирование полей фильтра)
   var toggleDisabledAttributeFilters = function (isPageNotActive, field, select) {
-    for (var i = 0; i < select.length; i++) {
-      if (isPageNotActive) {
-        select[i].setAttribute('disabled', 'disabled');
-        field.setAttribute('disabled', 'disabled');
-        filterForm.reset();
-      } else {
-        select[i].removeAttribute('disabled');
-        field.removeAttribute('disabled');
-      }
+    if (isPageNotActive) {
+      select.forEach(function (it) {
+        it.setAttribute('disabled', 'disabled');
+      });
+      field.setAttribute('disabled', 'disabled');
+      filterForm.reset();
+    } else {
+      select.forEach(function (it) {
+        it.removeAttribute('disabled');
+      });
+      field.removeAttribute('disabled');
     }
   };
 
   toggleDisabledAttributeFilters(true, filterFieldset, filterSelect);
 
   // Фильтрует объявления
-  function getFilteredAdverts(ads) {
-    var filteredAdverts = ads.filter(function (ad) {
-      return checkHousing(ad) && checkPrice(ad)
-      && checkRooms(ad) && checkGuests(ad) && checkFeatures(ad);
-    });
-
+  var getFilteredAdverts = function (ads) {
+    for (var i = 0; i < window.ads.length; i++) {
+      var filteredAdverts = ads.filter(function (ad) {
+        return checkHousing(ad) && checkPrice(ad) &&
+          checkRooms(ad) && checkGuests(ad) && checkFeatures(ad);
+      });
+      if (window.ads.length === MAX_PIN_ON_MAP_QUANTITY) {
+        break;
+      }
+    }
     return filteredAdverts.slice(0, MAX_PIN_ON_MAP_QUANTITY);
-  }
+  };
+
+  // Функция выбора фильтров
+  var checkfilterItem = function (it, item, key) {
+    return it.value === 'any' ? true : it.value === item[key].toString();
+  };
 
   // Выбор типа жилья
-  function checkHousing(ad) {
-    return filterHousingType.value === FILTER_VALUE_DEFAULT ? true : filterHousingType.value === ad.offer.type;
-  }
+  var checkHousing = function (ad) {
+    return checkfilterItem(filterHousingType, ad.offer, 'type');
+  };
 
   // Выбор диапазона цены
   var checkPrice = function (ad) {
@@ -69,12 +79,12 @@
 
   // Выбор количества комнат
   var checkRooms = function (ad) {
-    return filterRoomNumber.value === FILTER_VALUE_DEFAULT ? true : ad.offer.rooms;
+    return checkfilterItem(filterRoomNumber, ad.offer, 'rooms');
   };
 
   // Выбор количества гостей
   var checkGuests = function (ad) {
-    return filterGuestCapacity.value === FILTER_VALUE_DEFAULT ? true : ad.offer.guests;
+    return checkfilterItem(filterGuestCapacity, ad.offer, 'guests');
   };
 
   // Выбор удобств
@@ -86,11 +96,11 @@
   };
 
   // Обработчик изменения фильтров
-  function onFilterChange() {
-    window.map.closeCard();
+  var onFilterChange = function () {
+    window.cardPopup.removeCard();
     window.pins.removePins();
     window.debounce(window.pins.addPins(getFilteredAdverts(window.ads)));
-  }
+  };
 
   filterForm.addEventListener('change', onFilterChange);
 

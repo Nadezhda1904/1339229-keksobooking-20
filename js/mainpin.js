@@ -2,7 +2,7 @@
 (function () {
 
   var newLocation;
-  var onPinActiveMouseMove = function (evt) {
+  var onMainPinMouseMove = function (evt) {
     evt.preventDefault();
 
     var startCoords = {
@@ -24,18 +24,18 @@
       };
 
       if (
-        window.data.pinActive.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x >= 0 &&
-        window.data.pinActive.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x <= window.form.MAP_WIDTH &&
-        window.data.pinActive.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y >= 130 &&
-        window.data.pinActive.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y <= 630
+        window.data.mainPin.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x >= 0 &&
+        window.data.mainPin.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x <= window.form.MAP_WIDTH &&
+        window.data.mainPin.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y >= 130 &&
+        window.data.mainPin.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y <= 630
       ) {
 
-        window.data.pinActive.style.left = (window.data.pinActive.offsetLeft - shift.x) + 'px';
-        window.data.pinActive.style.top = (window.data.pinActive.offsetTop - shift.y) + 'px';
+        window.data.mainPin.style.left = (window.data.mainPin.offsetLeft - shift.x) + 'px';
+        window.data.mainPin.style.top = (window.data.mainPin.offsetTop - shift.y) + 'px';
 
         newLocation = {
-          x: window.data.pinActive.offsetLeft - shift.x,
-          y: window.data.pinActive.offsetTop - shift.y
+          x: window.data.mainPin.offsetLeft - shift.x,
+          y: window.data.mainPin.offsetTop - shift.y
         };
 
         window.form.renderAddress(true, newLocation);
@@ -55,11 +55,11 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  window.data.pinActive.addEventListener('mousedown', onPinActiveMouseMove);
+  window.data.mainPin.addEventListener('mousedown', onMainPinMouseMove);
 
   window.mainPin = {
     newLocation: newLocation,
-    onPinActiveMouseMove: onPinActiveMouseMove
+    onMainPinMouseMove: onMainPinMouseMove
   };
 
 })();
