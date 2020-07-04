@@ -51,8 +51,11 @@
   var getFilteredAdverts = function (ads) {
     for (var i = 0; i < window.ads.length; i++) {
       var filteredAdverts = ads.filter(function (ad) {
-        return checkHousing(ad) && checkPrice(ad) &&
-          checkRooms(ad) && checkGuests(ad) && checkFeatures(ad);
+        return checkHousing(ad)
+        && checkPrice(ad)
+        && checkRooms(ad)
+        && checkGuests(ad)
+        && checkFeatures(ad);
       });
       if (window.ads.length === MAX_PIN_ON_MAP_QUANTITY) {
         break;

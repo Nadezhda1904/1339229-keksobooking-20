@@ -27,10 +27,10 @@
   };
 
   var adForm = document.querySelector('.ad-form');
-  var fieldsets = adForm.querySelectorAll('fieldset');
-  var address = document.querySelector('#address');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var adFormAddress = document.querySelector('#address');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
-  var fields = adForm.querySelectorAll('input, select');
+  var adFormFields = adForm.querySelectorAll('input, select');
 
   // Добавляет/удаляет атрибут disabled полям формы (блокирование полей формы)
   var toggleDisabledAttribute = function (isPageNotActive, field) {
@@ -45,7 +45,7 @@
     }
   };
 
-  toggleDisabledAttribute(true, fieldsets);
+  toggleDisabledAttribute(true, adFormFieldsets);
 
   // Добавляет координаты адреса на страницу
   var location = {
@@ -55,9 +55,9 @@
 
   function renderAddress(isPageActive, coord) {
     if (isPageActive) {
-      address.value = coord.x + ', ' + (coord.y + MAP_PIN_CURSOR_HEIGHT);
+      adFormAddress.value = coord.x + ', ' + (coord.y + MAP_PIN_CURSOR_HEIGHT);
     } else {
-      address.value = coord.x + ', ' + coord.y;
+      adFormAddress.value = coord.x + ', ' + coord.y;
     }
   }
   renderAddress(false, location);
@@ -113,13 +113,21 @@
         },
         function () {
           addformMessage(messageError);
-          validateFormFields(fields);
+          validateFormFields(adFormFields);
         });
   };
 
   adForm.addEventListener('submit', onSubmitSendForm);
 
   // Очистка формы
+  /* var resetForm = function () {
+    adForm.classList.add('ad-form--disabled');
+    adForm.reset();
+    toggleDisabledAttribute(true, adFormFieldsets);
+    renderAddress(false, location);
+    window.previewImage.disableLoadImg();
+  };*/
+
   var resetButton = document.querySelector('.ad-form__reset');
   resetButton.addEventListener('click', function () {
     window.main.deactivatePage();
@@ -174,11 +182,12 @@
     MAP_HEIGHT: MAP_HEIGHT,
     location: location,
     adForm: adForm,
-    fieldsets: fieldsets,
-    address: address,
+    adFormFieldsets: adFormFieldsets,
+    adFormAddress: adFormAddress,
     renderAddress: renderAddress,
     toggleDisabledAttribute: toggleDisabledAttribute,
     adFormSubmit: adFormSubmit,
+    // resetForm: resetForm
   };
 
 })();

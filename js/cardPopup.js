@@ -4,7 +4,7 @@
   // Попап
   var card;
   var cardClose;
-  var pins = document.querySelector('.map__pins');
+  var mapPin = document.querySelector('.map__pins');
 
   // Удаляет карту
   var removeCard = function () {
@@ -19,6 +19,7 @@
     cardClose.removeEventListener('click', closeCard);
     document.removeEventListener('keydown', onCardEscPress);
     document.removeEventListener('keydown', onCardEnterPress);
+    window.pins.removeActiveClassPin();
   };
 
   var onCardEscPress = function (evt) {
@@ -38,7 +39,7 @@
     if (card) {
       closeCard();
     }
-    card = pins.insertAdjacentElement('afterEnd', window.cardRender.createCard(ad));
+    card = mapPin.insertAdjacentElement('afterEnd', window.cardRender.createCard(ad));
     cardClose = card.querySelector('.popup__close');
     cardClose.addEventListener('click', closeCard);
     document.addEventListener('keydown', onCardEscPress);
@@ -46,7 +47,7 @@
   };
 
   window.cardPopup = {
-    pins: pins,
+    mapPin: mapPin,
     removeCard: removeCard,
     openCard: openCard,
     closeCard: closeCard

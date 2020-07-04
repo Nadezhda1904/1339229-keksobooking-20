@@ -7,7 +7,7 @@
     window.form.adForm.classList.add('ad-form--disabled');
     window.filters.toggleDisabledAttributeFilters(true, window.filters.filterFieldset, window.filters.filterSelect);
     window.form.adForm.reset();
-    window.form.toggleDisabledAttribute(true, window.form.fieldsets);
+    window.form.toggleDisabledAttribute(true, window.form.adFormFieldsets);
     window.form.renderAddress(false, window.form.location);
     window.data.mainPin.addEventListener('mouseup', onMainPinMouse);
     window.data.mainPin.removeEventListener('keydown', onMainPinEnter);
@@ -15,6 +15,7 @@
     window.data.mainPin.style.top = '375px';
     window.pins.removePins();
     window.cardPopup.removeCard();
+    window.previewImage.disableLoadImg();
   };
 
   // Переводит страницу в активное состояние
@@ -23,10 +24,11 @@
     window.form.adForm.classList.remove('ad-form--disabled');
     window.filters.toggleDisabledAttributeFilters(false, window.filters.filterFieldset, window.filters.filterSelect);
     window.form.renderAddress(true, window.form.location);
-    window.form.toggleDisabledAttribute(false, window.form.fieldsets);
+    window.form.toggleDisabledAttribute(false, window.form.adFormFieldsets);
     window.data.mainPin.removeEventListener('mouseup', onMainPinMouse);
     window.data.mainPin.removeEventListener('keydown', onMainPinEnter);
     window.load(window.pins.onSuccessAddPins, window.pins.onErrorAddPins);
+    window.previewImage.activateLoadImg();
   };
 
   // Обработчик для активации страницы левой (основной) кнопкой мыши
