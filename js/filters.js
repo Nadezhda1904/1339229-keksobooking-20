@@ -47,47 +47,43 @@
 
   toggleDisabledAttributeFilters(true, filterFieldset, filterSelect);
 
+  var resetFilter = function () {
+    filterHousingType.value = FILTER_VALUE_DEFAULT;
+    filterPrice.value = FILTER_VALUE_DEFAULT;
+    filterRoomNumber.value = FILTER_VALUE_DEFAULT;
+    filterGuestCapacity.value = FILTER_VALUE_DEFAULT;
+    filterFeatures.querySelectorAll('input:checked').forEach(function (elem) {
+      elem.checked = false;
+    });
+  };
+
   // Фильтрует объявления
   var getFilteredAdverts = function (ads) {
-    for (var i = 0; i < window.ads.length; i++) {
-      var filteredAdverts = ads.filter(function (ad) {
-        return checkHousing(ad)
-        && checkPrice(ad)
-        && checkRooms(ad)
-        && checkGuests(ad)
-        && checkFeatures(ad);
-      });
-      if (window.ads.length === MAX_PIN_ON_MAP_QUANTITY) {
+    var filteredAdverts = [];
+    for (var i = 0; i < ads.length; i++) {
+      if (checkfilterItem(filterHousingType, ads[i].offer, 'type')
+        && checkfilterItem(filterRoomNumber, ads[i].offer, 'rooms')
+        && checkfilterItem(filterGuestCapacity, ads[i].offer, 'guests')
+        && checkPrice(ads[i])
+        && checkFeatures(ads[i])) {
+        filteredAdverts.push(ads[i]);
+      }
+      if (filteredAdverts.length === MAX_PIN_ON_MAP_QUANTITY) {
         break;
       }
     }
-    return filteredAdverts.slice(0, MAX_PIN_ON_MAP_QUANTITY);
+    return filteredAdverts;
   };
 
-  // Функция выбора фильтров
+  // Функция выбора фильтров (типа жилья, комнат, гостей)
   var checkfilterItem = function (it, item, key) {
-    return it.value === 'any' ? true : it.value === item[key].toString();
-  };
-
-  // Выбор типа жилья
-  var checkHousing = function (ad) {
-    return checkfilterItem(filterHousingType, ad.offer, 'type');
+    return it.value === FILTER_VALUE_DEFAULT ? true : it.value === item[key].toString();
   };
 
   // Выбор диапазона цены
   var checkPrice = function (ad) {
     var priceRange = FILTER_PRICE_VALUES[filterPrice.value];
     return filterPrice.value === FILTER_VALUE_DEFAULT ? true : ad.offer.price > priceRange.min && ad.offer.price <= priceRange.max;
-  };
-
-  // Выбор количества комнат
-  var checkRooms = function (ad) {
-    return checkfilterItem(filterRoomNumber, ad.offer, 'rooms');
-  };
-
-  // Выбор количества гостей
-  var checkGuests = function (ad) {
-    return checkfilterItem(filterGuestCapacity, ad.offer, 'guests');
   };
 
   // Выбор удобств
@@ -102,16 +98,29 @@
   var onFilterChange = function () {
     window.cardPopup.removeCard();
     window.pins.removePins();
-    window.debounce(window.pins.addPins(getFilteredAdverts(window.ads)));
+    window.util.debounce(window.pins.addPins(getFilteredAdverts(window.ads)));
   };
 
   filterForm.addEventListener('change', onFilterChange);
 
+  // Блокировка фильтров
+  var filterDisabled = function () {
+    resetFilter();
+    toggleDisabledAttributeFilters(true, filterFieldset, filterSelect);
+    filterForm.removeEventListener('change', onFilterChange);
+  };
+
+  // Разблокировка фильтров
+  var filterEnabled = function () {
+    toggleDisabledAttributeFilters(false, filterFieldset, filterSelect);
+    filterForm.addEventListener('change', onFilterChange);
+  };
+
+
   window.filters = {
-    filterFieldset: filterFieldset,
-    filterSelect: filterSelect,
-    toggleDisabledAttributeFilters: toggleDisabledAttributeFilters,
-    MAX_PIN_ON_MAP_QUANTITY: MAX_PIN_ON_MAP_QUANTITY
+    MAX_PIN_ON_MAP_QUANTITY: MAX_PIN_ON_MAP_QUANTITY,
+    filterDisabled: filterDisabled,
+    filterEnabled: filterEnabled
   };
 
 })();

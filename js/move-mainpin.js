@@ -55,10 +55,9 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  window.data.mainPin.addEventListener('mousedown', onMainPinMouseMove);
+  window.map.mainPin.addEventListener('mousedown', onMainPinMouseMove);
 
   window.moveMainPin = {
-    newLocation: newLocation,
     onMainPinMouseMove: onMainPinMouseMove
   };
 

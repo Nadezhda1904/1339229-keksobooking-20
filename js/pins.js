@@ -75,8 +75,6 @@
   window.pins = {
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT,
-    generatePin: generatePin,
-    pinsFragment: pinsFragment,
     addPins: addPins,
     onSuccessAddPins: onSuccessAddPins,
     onErrorAddPins: onErrorAddPins,

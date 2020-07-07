@@ -14,7 +14,6 @@
 
   photoPreviewImage.style.width = '70px';
   photoPreviewImage.style.height = '70px';
-  photoPreview.append(photoPreviewImage);
 
   var clearPhotoPreview = function () {
     var image = photoPreview.querySelector('img');
@@ -29,7 +28,7 @@
     }
   };
 
-  var loadPreview = function (input, element) {
+  var loadPreview = function (input, element, img) {
     var file = input.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -42,6 +41,7 @@
 
       reader.addEventListener('load', function () {
         element.src = reader.result;
+        img.append(element);
       });
 
       reader.readAsDataURL(file);
@@ -53,7 +53,7 @@
   };
 
   var onPhotoFileChooserChange = function () {
-    loadPreview(photoFileChooser, photoPreviewImage);
+    loadPreview(photoFileChooser, photoPreviewImage, photoPreview);
   };
 
   var activateLoadImg = function () {
@@ -70,6 +70,6 @@
 
   window.previewImage = {
     activateLoadImg: activateLoadImg,
-    disableLoadImg: disableLoadImg,
+    disableLoadImg: disableLoadImg
   };
 })();

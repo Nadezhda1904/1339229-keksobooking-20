@@ -1,12 +1,6 @@
 'use strict';
 
 (function () {
-  var MAP_PIN_BTN_WIDTH = document.querySelector('.map__pin--main').offsetWidth;
-  var MAP_PIN_BTN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
-  var MAP_PIN_CURSOR_HEIGHT = 22;
-  var MAP_WIDTH = document.querySelector('.map').offsetWidth;
-  var MAP_HEIGHT = document.querySelector('.map').offsetHeight;
-
   var countOfGuestsInRoom = {
     1: {
       guestsValue: [1],
@@ -29,8 +23,23 @@
   var adForm = document.querySelector('.ad-form');
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var adFormAddress = document.querySelector('#address');
-  var adFormSubmit = adForm.querySelector('.ad-form__submit');
+  // var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormFields = adForm.querySelectorAll('input, select');
+
+  // Добавляет координаты адреса на страницу
+  var location = {
+    x: Math.round(window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2),
+    y: Math.round(window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT / 2)
+  };
+
+  function renderAddress(isPageActive, coord) {
+    if (isPageActive) {
+      adFormAddress.value = coord.x + ', ' + (coord.y + window.map.MAP_PIN_CURSOR_HEIGHT);
+    } else {
+      adFormAddress.value = coord.x + ', ' + coord.y;
+    }
+  }
+  renderAddress(false, location);
 
   // Добавляет/удаляет атрибут disabled полям формы (блокирование полей формы)
   var toggleDisabledAttribute = function (isPageNotActive, field) {
@@ -47,26 +56,24 @@
 
   toggleDisabledAttribute(true, adFormFieldsets);
 
-  // Добавляет координаты адреса на страницу
-  var location = {
-    x: Math.round(window.data.mainPin.offsetLeft + MAP_PIN_BTN_WIDTH / 2),
-    y: Math.round(window.data.mainPin.offsetTop + MAP_PIN_BTN_HEIGHT / 2)
+  // Деактивация формы
+  var deactivateForm = function () {
+    adForm.classList.add('ad-form--disabled');
+    adForm.reset();
+    toggleDisabledAttribute(true, adFormFieldsets);
+    renderAddress(false, location);
+    typeOfHousing.removeEventListener('change', validateMinPriceOfHousing);
+    priceReset();
+    window.previewImage.disableLoadImg();
   };
 
-  function renderAddress(isPageActive, coord) {
-    if (isPageActive) {
-      adFormAddress.value = coord.x + ', ' + (coord.y + MAP_PIN_CURSOR_HEIGHT);
-    } else {
-      adFormAddress.value = coord.x + ', ' + coord.y;
-    }
-  }
-  renderAddress(false, location);
-
-  // Функция добавления класса ошибки на невалидные поля
-  var validateFormFields = function (formFields) {
-    formFields.forEach(function (item) {
-      item.classList.toggle('error-form', !item.validity.valid);
-    });
+  // Активация формы
+  var activateForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    toggleDisabledAttribute(false, adFormFieldsets);
+    renderAddress(true, location);
+    typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
+    window.previewImage.activateLoadImg();
   };
 
   // Сообщение об успехе/ошибке отправки формы
@@ -87,7 +94,7 @@
     document.removeEventListener('keydown', onDocumentEscape);
   };
 
-  // Обработчик удаления сообщений по клику на документ
+  // Обработчик удаления сообщений при отправки формы по клику на документ
   var onDocumentClick = function (evt) {
     evt.preventDefault();
     if (evt.button === 0) {
@@ -95,7 +102,7 @@
     }
   };
 
-  // Обработчик удаления сообщений по по клику на Escape
+  // Обработчик удаления сообщений при отправки формы по по клику на Escape
   var onDocumentEscape = function (evt) {
     evt.preventDefault();
     if (evt.key === 'Escape') {
@@ -106,7 +113,7 @@
   // Отправка формы
   var onSubmitSendForm = function (evt) {
     evt.preventDefault();
-    window.upload(new FormData(adForm),
+    window.backend.upload(new FormData(adForm),
         function () {
           addformMessage(messageSuccess);
           window.main.deactivatePage();
@@ -119,19 +126,12 @@
 
   adForm.addEventListener('submit', onSubmitSendForm);
 
-  // Очистка формы
-  /* var resetForm = function () {
-    adForm.classList.add('ad-form--disabled');
-    adForm.reset();
-    toggleDisabledAttribute(true, adFormFieldsets);
-    renderAddress(false, location);
-    window.previewImage.disableLoadImg();
-  };*/
-
-  var resetButton = document.querySelector('.ad-form__reset');
-  resetButton.addEventListener('click', function () {
-    window.main.deactivatePage();
-  });
+  // Функция добавления класса ошибки на невалидные поля
+  var validateFormFields = function (formFields) {
+    formFields.forEach(function (item) {
+      item.classList.toggle('error-form', !item.validity.valid);
+    });
+  };
 
   // Проверка валидации формы
   var rooms = document.querySelector('#room_number');
@@ -163,6 +163,12 @@
     priceOfHousing.min = type.minPrice;
   };
 
+  var priceReset = function () {
+    var type = window.data.OFFER_TYPES.flat;
+    priceOfHousing.placeholder = type.minPrice;
+    priceOfHousing.min = type.minPrice;
+  };
+
   typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
 
   // Определение соответствия времени въезда выезду
@@ -175,19 +181,11 @@
   };
 
   window.form = {
-    MAP_PIN_BTN_WIDTH: MAP_PIN_BTN_WIDTH,
-    MAP_PIN_BTN_HEIGHT: MAP_PIN_BTN_HEIGHT,
-    MAP_PIN_CURSOR_HEIGHT: MAP_PIN_CURSOR_HEIGHT,
-    MAP_WIDTH: MAP_WIDTH,
-    MAP_HEIGHT: MAP_HEIGHT,
     location: location,
-    adForm: adForm,
-    adFormFieldsets: adFormFieldsets,
-    adFormAddress: adFormAddress,
     renderAddress: renderAddress,
-    toggleDisabledAttribute: toggleDisabledAttribute,
-    adFormSubmit: adFormSubmit,
-    // resetForm: resetForm
+    // adFormSubmit: adFormSubmit,
+    activateForm: activateForm,
+    deactivateForm: deactivateForm
   };
 
 })();

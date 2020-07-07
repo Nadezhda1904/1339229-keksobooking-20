@@ -43,37 +43,31 @@
   var LOCATION_Y_MIN = 130;
   var LOCATION_Y_MAX = 630;
 
-  var mainPin = document.querySelector('.map__pin--main');
   var map = document.querySelector('.map');
-
-  // Вычисляет случайное число от min до max
-  var getRandomNumber = function (min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  };
 
   // Создает один объект(данные объявления)
   var generateAdverts = function () {
     var advertsData = {
       author: {
-        avatar: 'img/avatars/user0' + getRandomNumber(1, COUNT_OF_AVATAR) + '.png'
+        avatar: 'img/avatars/user0' + window.util.getRandomNumber(1, COUNT_OF_AVATAR) + '.png'
       },
 
       offer: {
         title: 'Заголовок объявления',
-        address: getRandomNumber(0, map.offsetWidth) + ', ' + getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
-        price: getRandomNumber(PRICE_MIN, PRICE_MAX),
-        type: TYPES[getRandomNumber(0, TYPES.length - 1)],
-        rooms: getRandomNumber(ROOMS_MIN, ROOMS_MAX),
-        guests: getRandomNumber(GUESTS_MIN, GUESTS_MAX),
-        checkin: CHECKIN[getRandomNumber(0, CHECKIN.length - 1)],
-        checkout: CHECKOUT[getRandomNumber(0, CHECKOUT.length - 1)],
+        address: window.util.getRandomNumber(0, map.offsetWidth) + ', ' + window.util.getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX),
+        price: window.util.getRandomNumber(PRICE_MIN, PRICE_MAX),
+        type: TYPES[window.util.getRandomNumber(0, TYPES.length - 1)],
+        rooms: window.util.getRandomNumber(ROOMS_MIN, ROOMS_MAX),
+        guests: window.util.getRandomNumber(GUESTS_MIN, GUESTS_MAX),
+        checkin: CHECKIN[window.util.getRandomNumber(0, CHECKIN.length - 1)],
+        checkout: CHECKOUT[window.util.getRandomNumber(0, CHECKOUT.length - 1)],
         features: FEATURES,
         description: 'Описание объявления',
         photos: PHOTOS
       },
       location: {
-        x: getRandomNumber(0, map.offsetWidth),
-        y: getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
+        x: window.util.getRandomNumber(0, map.offsetWidth),
+        y: window.util.getRandomNumber(LOCATION_Y_MIN, LOCATION_Y_MAX)
       }
     };
     return advertsData;
@@ -83,7 +77,6 @@
     COUNT_OF_OBJECTS: COUNT_OF_OBJECTS,
     TYPES_POPUP: TYPES_POPUP,
     OFFER_TYPES: OFFER_TYPES,
-    mainPin: mainPin,
     map: map,
     generateAdverts: generateAdverts
   };
