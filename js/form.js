@@ -23,7 +23,6 @@
   var adForm = document.querySelector('.ad-form');
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var adFormAddress = document.querySelector('#address');
-  // var adFormSubmit = adForm.querySelector('.ad-form__submit');
   var adFormFields = adForm.querySelectorAll('input, select');
 
   // Добавляет координаты адреса на страницу
@@ -85,7 +84,7 @@
   var addformMessage = function (message) {
     document.body.appendChild(message);
     document.addEventListener('click', onDocumentClick);
-    document.addEventListener('keydown', onDocumentEscape);
+    window.addEventListener('keydown', onDocumentEscape);
   };
 
   var removeformMessage = function () {
@@ -183,7 +182,6 @@
   window.form = {
     location: location,
     renderAddress: renderAddress,
-    // adFormSubmit: adFormSubmit,
     activateForm: activateForm,
     deactivateForm: deactivateForm
   };
