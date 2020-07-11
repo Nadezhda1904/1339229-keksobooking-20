@@ -43,7 +43,7 @@
     adverts.forEach(function (adv) {
       pinsFragment.appendChild(generatePin(adv));
     });
-    window.cardPopup.pins.appendChild(pinsFragment);
+    window.cardPopup.mapPin.appendChild(pinsFragment);
   };
 
   window.ads = [];
@@ -75,12 +75,11 @@
   window.pins = {
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT,
-    generatePin: generatePin,
-    pinsFragment: pinsFragment,
     addPins: addPins,
     onSuccessAddPins: onSuccessAddPins,
     onErrorAddPins: onErrorAddPins,
-    removePins: removePins
+    removePins: removePins,
+    removeActiveClassPin: removeActiveClassPin
   };
 
 })();

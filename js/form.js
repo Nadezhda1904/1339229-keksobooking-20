@@ -1,12 +1,6 @@
 'use strict';
 
 (function () {
-  var MAP_PIN_BTN_WIDTH = document.querySelector('.map__pin--main').offsetWidth;
-  var MAP_PIN_BTN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
-  var MAP_PIN_CURSOR_HEIGHT = 22;
-  var MAP_WIDTH = document.querySelector('.map').offsetWidth;
-  var MAP_HEIGHT = document.querySelector('.map').offsetHeight;
-
   var countOfGuestsInRoom = {
     1: {
       guestsValue: [1],
@@ -27,10 +21,25 @@
   };
 
   var adForm = document.querySelector('.ad-form');
-  var fieldsets = adForm.querySelectorAll('fieldset');
-  var address = document.querySelector('#address');
+  var adFormFieldsets = adForm.querySelectorAll('fieldset');
+  var adFormAddress = document.querySelector('#address');
+  var adFormFields = adForm.querySelectorAll('input, select');
   var adFormSubmit = adForm.querySelector('.ad-form__submit');
-  var fields = adForm.querySelectorAll('input, select');
+
+  // Добавляет координаты адреса на страницу
+  var location = {
+    x: Math.round(window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2),
+    y: Math.round(window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT / 2)
+  };
+
+  function renderAddress(isPageActive, coord) {
+    if (isPageActive) {
+      adFormAddress.value = coord.x + ', ' + (coord.y + window.map.MAP_PIN_CURSOR_HEIGHT);
+    } else {
+      adFormAddress.value = coord.x + ', ' + coord.y;
+    }
+  }
+  renderAddress(false, location);
 
   // Добавляет/удаляет атрибут disabled полям формы (блокирование полей формы)
   var toggleDisabledAttribute = function (isPageNotActive, field) {
@@ -45,28 +54,30 @@
     }
   };
 
-  toggleDisabledAttribute(true, fieldsets);
+  toggleDisabledAttribute(true, adFormFieldsets);
 
-  // Добавляет координаты адреса на страницу
-  var location = {
-    x: Math.round(window.data.mainPin.offsetLeft + MAP_PIN_BTN_WIDTH / 2),
-    y: Math.round(window.data.mainPin.offsetTop + MAP_PIN_BTN_HEIGHT / 2)
+  // Деактивация формы
+  var deactivateForm = function () {
+    adForm.classList.add('ad-form--disabled');
+    adForm.reset();
+    toggleDisabledAttribute(true, adFormFieldsets);
+    renderAddress(false, location);
+    typeOfHousing.removeEventListener('change', validateMinPriceOfHousing);
+    priceReset();
+    window.previewImage.disableLoadImg();
+    adForm.removeEventListener('submit', onSubmitSendForm);
+    adFormSubmit.removeEventListener('click', onFormSubmitClick);
   };
 
-  function renderAddress(isPageActive, coord) {
-    if (isPageActive) {
-      address.value = coord.x + ', ' + (coord.y + MAP_PIN_CURSOR_HEIGHT);
-    } else {
-      address.value = coord.x + ', ' + coord.y;
-    }
-  }
-  renderAddress(false, location);
-
-  // Функция добавления класса ошибки на невалидные поля
-  var validateFormFields = function (formFields) {
-    formFields.forEach(function (item) {
-      item.classList.toggle('error-form', !item.validity.valid);
-    });
+  // Активация формы
+  var activateForm = function () {
+    adForm.classList.remove('ad-form--disabled');
+    toggleDisabledAttribute(false, adFormFieldsets);
+    renderAddress(true, location);
+    typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
+    window.previewImage.activateLoadImg();
+    adForm.addEventListener('submit', onSubmitSendForm);
+    adFormSubmit.addEventListener('click', onFormSubmitClick);
   };
 
   // Сообщение об успехе/ошибке отправки формы
@@ -75,55 +86,58 @@
   var messageErrorTmpl = document.querySelector('#error').content.querySelector('.error');
   var messageError = messageErrorTmpl.cloneNode(true);
 
-  var addformMessage = function (message) {
+  var addFormMessage = function (message) {
     document.body.appendChild(message);
     document.addEventListener('click', onDocumentClick);
     document.addEventListener('keydown', onDocumentEscape);
   };
 
-  var removeformMessage = function () {
+  var removeFormMessage = function () {
     document.querySelector('.message').remove();
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onDocumentEscape);
   };
 
-  // Обработчик удаления сообщений по клику на документ
+  // Обработчик удаления сообщений при отправки формы по клику на документ
   var onDocumentClick = function (evt) {
     evt.preventDefault();
     if (evt.button === 0) {
-      removeformMessage();
+      removeFormMessage();
     }
   };
 
-  // Обработчик удаления сообщений по по клику на Escape
+  // Обработчик удаления сообщений при отправки формы по по клику на Escape
   var onDocumentEscape = function (evt) {
     evt.preventDefault();
     if (evt.key === 'Escape') {
-      removeformMessage();
+      removeFormMessage();
     }
   };
 
   // Отправка формы
   var onSubmitSendForm = function (evt) {
     evt.preventDefault();
-    window.upload(new FormData(adForm),
+    window.backend.upload(new FormData(adForm),
         function () {
-          addformMessage(messageSuccess);
+          addFormMessage(messageSuccess);
           window.main.deactivatePage();
         },
         function () {
-          addformMessage(messageError);
-          validateFormFields(fields);
+          addFormMessage(messageError);
+          validateFormFields(adFormFields);
         });
   };
 
-  adForm.addEventListener('submit', onSubmitSendForm);
+  // Функция добавления класса ошибки на невалидные поля
+  var validateFormFields = function (formFields) {
+    formFields.forEach(function (item) {
+      item.classList.toggle('error-form', !item.validity.valid);
+    });
+  };
 
-  // Очистка формы
-  var resetButton = document.querySelector('.ad-form__reset');
-  resetButton.addEventListener('click', function () {
-    window.main.deactivatePage();
-  });
+  var onFormSubmitClick = function () {
+    validateFormFields(adFormFields);
+  };
 
   // Проверка валидации формы
   var rooms = document.querySelector('#room_number');
@@ -155,6 +169,12 @@
     priceOfHousing.min = type.minPrice;
   };
 
+  var priceReset = function () {
+    var type = window.data.OFFER_TYPES.flat;
+    priceOfHousing.placeholder = type.minPrice;
+    priceOfHousing.min = type.minPrice;
+  };
+
   typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
 
   // Определение соответствия времени въезда выезду
@@ -167,18 +187,10 @@
   };
 
   window.form = {
-    MAP_PIN_BTN_WIDTH: MAP_PIN_BTN_WIDTH,
-    MAP_PIN_BTN_HEIGHT: MAP_PIN_BTN_HEIGHT,
-    MAP_PIN_CURSOR_HEIGHT: MAP_PIN_CURSOR_HEIGHT,
-    MAP_WIDTH: MAP_WIDTH,
-    MAP_HEIGHT: MAP_HEIGHT,
     location: location,
-    adForm: adForm,
-    fieldsets: fieldsets,
-    address: address,
     renderAddress: renderAddress,
-    toggleDisabledAttribute: toggleDisabledAttribute,
-    adFormSubmit: adFormSubmit,
+    activateForm: activateForm,
+    deactivateForm: deactivateForm
   };
 
 })();

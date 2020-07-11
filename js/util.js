@@ -2,9 +2,14 @@
 
 (function () {
 
+  // Вычисляет случайное число от min до max
+  var getRandomNumber = function (min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   var DEBOUNCE_INTERVAL = 300;
 
-  window.debounce = function (cb) {
+  var debounce = function (cb) {
     var lastTimeout = null;
     return function () {
       var args = arguments;
@@ -17,4 +22,8 @@
     };
   };
 
+  window.util = {
+    getRandomNumber: getRandomNumber,
+    debounce: debounce
+  };
 })();

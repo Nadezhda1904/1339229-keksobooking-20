@@ -47,6 +47,7 @@
       cardBlockPhoto.width = 45;
       cardBlockPhoto.height = 40;
       template.querySelector('.popup__photos').appendChild(cardBlockPhoto);
+      cardBlockPhoto.classList.add('popup__photo');
     }
   };
 

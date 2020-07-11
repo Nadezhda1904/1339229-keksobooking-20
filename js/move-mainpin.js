@@ -24,18 +24,18 @@
       };
 
       if (
-        window.data.mainPin.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x >= 0 &&
-        window.data.mainPin.offsetLeft + window.form.MAP_PIN_BTN_WIDTH / 2 - shift.x <= window.form.MAP_WIDTH &&
-        window.data.mainPin.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y >= 130 &&
-        window.data.mainPin.offsetTop + window.form.MAP_PIN_BTN_HEIGHT - shift.y <= 630
+        window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2 - shift.x >= 0
+        && window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2 - shift.x <= window.map.MAP_WIDTH
+        && window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT + window.map.MAP_PIN_CURSOR_HEIGHT - shift.y >= 130
+        && window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT + window.map.MAP_PIN_CURSOR_HEIGHT - shift.y <= 630
       ) {
 
-        window.data.mainPin.style.left = (window.data.mainPin.offsetLeft - shift.x) + 'px';
-        window.data.mainPin.style.top = (window.data.mainPin.offsetTop - shift.y) + 'px';
+        window.map.mainPin.style.left = (window.map.mainPin.offsetLeft - shift.x) + 'px';
+        window.map.mainPin.style.top = (window.map.mainPin.offsetTop - shift.y) + 'px';
 
         newLocation = {
-          x: window.data.mainPin.offsetLeft - shift.x,
-          y: window.data.mainPin.offsetTop - shift.y
+          x: window.map.mainPin.offsetLeft + Math.floor(window.map.MAP_PIN_BTN_WIDTH / 2) - shift.x,
+          y: window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT - shift.y
         };
 
         window.form.renderAddress(true, newLocation);
@@ -55,10 +55,9 @@
     document.addEventListener('mouseup', onMouseUp);
   };
 
-  window.data.mainPin.addEventListener('mousedown', onMainPinMouseMove);
+  window.map.mainPin.addEventListener('mousedown', onMainPinMouseMove);
 
-  window.mainPin = {
-    newLocation: newLocation,
+  window.moveMainPin = {
     onMainPinMouseMove: onMainPinMouseMove
   };
 
