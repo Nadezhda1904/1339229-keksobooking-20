@@ -7,7 +7,7 @@
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
-  var DEBOUNCE_INTERVAL = 300;
+  var DEBOUNCE_INTERVAL = 500;
 
   var debounce = function (cb) {
     var lastTimeout = null;
