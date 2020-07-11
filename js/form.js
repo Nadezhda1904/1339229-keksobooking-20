@@ -65,6 +65,7 @@
     typeOfHousing.removeEventListener('change', validateMinPriceOfHousing);
     priceReset();
     window.previewImage.disableLoadImg();
+    adForm.removeEventListener('submit', onSubmitSendForm);
     adFormSubmit.removeEventListener('click', onFormSubmitClick);
   };
 
@@ -75,6 +76,7 @@
     renderAddress(true, location);
     typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
     window.previewImage.activateLoadImg();
+    adForm.addEventListener('submit', onSubmitSendForm);
     adFormSubmit.addEventListener('click', onFormSubmitClick);
   };
 
@@ -84,13 +86,13 @@
   var messageErrorTmpl = document.querySelector('#error').content.querySelector('.error');
   var messageError = messageErrorTmpl.cloneNode(true);
 
-  var addformMessage = function (message) {
+  var addFormMessage = function (message) {
     document.body.appendChild(message);
     document.addEventListener('click', onDocumentClick);
-    window.addEventListener('keydown', onDocumentEscape);
+    document.addEventListener('keydown', onDocumentEscape);
   };
 
-  var removeformMessage = function () {
+  var removeFormMessage = function () {
     document.querySelector('.message').remove();
     document.removeEventListener('click', onDocumentClick);
     document.removeEventListener('keydown', onDocumentEscape);
@@ -100,7 +102,7 @@
   var onDocumentClick = function (evt) {
     evt.preventDefault();
     if (evt.button === 0) {
-      removeformMessage();
+      removeFormMessage();
     }
   };
 
@@ -108,7 +110,7 @@
   var onDocumentEscape = function (evt) {
     evt.preventDefault();
     if (evt.key === 'Escape') {
-      removeformMessage();
+      removeFormMessage();
     }
   };
 
@@ -117,16 +119,14 @@
     evt.preventDefault();
     window.backend.upload(new FormData(adForm),
         function () {
-          addformMessage(messageSuccess);
+          addFormMessage(messageSuccess);
           window.main.deactivatePage();
         },
         function () {
-          addformMessage(messageError);
+          addFormMessage(messageError);
           validateFormFields(adFormFields);
         });
   };
-
-  adForm.addEventListener('submit', onSubmitSendForm);
 
   // Функция добавления класса ошибки на невалидные поля
   var validateFormFields = function (formFields) {
