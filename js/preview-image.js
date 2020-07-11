@@ -40,8 +40,12 @@
       var reader = new FileReader();
 
       reader.addEventListener('load', function () {
-        element.src = reader.result;
-        img.append(element);
+        if (input === photoFileChooser) {
+          element.src = reader.result;
+          img.append(element);
+        } else {
+          element.src = reader.result;
+        }
       });
 
       reader.readAsDataURL(file);

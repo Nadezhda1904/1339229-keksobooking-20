@@ -24,6 +24,7 @@
   var adFormFieldsets = adForm.querySelectorAll('fieldset');
   var adFormAddress = document.querySelector('#address');
   var adFormFields = adForm.querySelectorAll('input, select');
+  var adFormSubmit = adForm.querySelector('.ad-form__submit');
 
   // Добавляет координаты адреса на страницу
   var location = {
@@ -64,6 +65,7 @@
     typeOfHousing.removeEventListener('change', validateMinPriceOfHousing);
     priceReset();
     window.previewImage.disableLoadImg();
+    adFormSubmit.removeEventListener('click', onFormSubmitClick);
   };
 
   // Активация формы
@@ -73,6 +75,7 @@
     renderAddress(true, location);
     typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
     window.previewImage.activateLoadImg();
+    adFormSubmit.addEventListener('click', onFormSubmitClick);
   };
 
   // Сообщение об успехе/ошибке отправки формы
@@ -130,6 +133,10 @@
     formFields.forEach(function (item) {
       item.classList.toggle('error-form', !item.validity.valid);
     });
+  };
+
+  var onFormSubmitClick = function () {
+    validateFormFields(adFormFields);
   };
 
   // Проверка валидации формы
