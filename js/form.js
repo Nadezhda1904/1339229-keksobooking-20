@@ -62,7 +62,7 @@
     adForm.reset();
     toggleDisabledAttribute(true, adFormFieldsets);
     renderAddress(false, location);
-    typeOfHousing.removeEventListener('change', validateMinPriceOfHousing);
+    typeOfHousing.removeEventListener('change', onTypeOfHousingChange);
     priceReset();
     window.previewImage.disableLoadImg();
     adForm.removeEventListener('submit', onSubmitSendForm);
@@ -74,7 +74,7 @@
     adForm.classList.remove('ad-form--disabled');
     toggleDisabledAttribute(false, adFormFieldsets);
     renderAddress(true, location);
-    typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
+    typeOfHousing.addEventListener('change', onTypeOfHousingChange);
     window.previewImage.activateLoadImg();
     adForm.addEventListener('submit', onSubmitSendForm);
     adFormSubmit.addEventListener('click', onFormSubmitClick);
@@ -156,8 +156,12 @@
       rooms.setCustomValidity(countOfGuestsInRoom[rooms.value].error));
   };
 
-  rooms.addEventListener('change', validateRoomsGuests);
-  capacity.addEventListener('change', validateRoomsGuests);
+  var onRoomsOrGuestsChange = function () {
+    validateRoomsGuests();
+  };
+
+  rooms.addEventListener('change', onRoomsOrGuestsChange);
+  capacity.addEventListener('change', onRoomsOrGuestsChange);
 
   // Определение минимальной цены соответствующему типу жилья
   var typeOfHousing = adForm.querySelector('select[name="type"]');
@@ -175,7 +179,11 @@
     priceOfHousing.min = type.minPrice;
   };
 
-  typeOfHousing.addEventListener('change', validateMinPriceOfHousing);
+  var onTypeOfHousingChange = function () {
+    validateMinPriceOfHousing();
+  };
+
+  typeOfHousing.addEventListener('change', onTypeOfHousingChange);
 
   // Определение соответствия времени въезда выезду
   var timeForm = document.querySelector('.ad-form__element--time');
@@ -189,8 +197,8 @@
   window.form = {
     location: location,
     renderAddress: renderAddress,
-    activateForm: activateForm,
-    deactivateForm: deactivateForm
+    activated: activateForm,
+    deactivated: deactivateForm
   };
 
 })();

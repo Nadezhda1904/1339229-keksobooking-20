@@ -4,17 +4,17 @@
   // Переводит страницу в неактивное состояние
   var deactivatePage = function () {
     window.data.map.classList.add('map--faded');
-    window.map.deactivateMap();
+    window.map.deactivate();
     window.filters.filterDisabled();
-    window.form.deactivateForm();
+    window.form.deactivated();
   };
 
   // Переводит страницу в активное состояние
   var activatePage = function () {
     window.data.map.classList.remove('map--faded');
-    window.map.activateMap();
+    window.map.activate();
     window.filters.filterEnabled();
-    window.form.activateForm();
+    window.form.activated();
   };
 
   // Сброс страницы

@@ -1,6 +1,9 @@
 'use strict';
 (function () {
 
+  var LOCATION_Y_MIN = 130;
+  var LOCATION_Y_MAX = 630;
+
   var newLocation;
   var onMainPinMouseMove = function (evt) {
     evt.preventDefault();
@@ -23,25 +26,39 @@
         y: moveEvt.clientY
       };
 
-      if (
-        window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2 - shift.x >= 0
-        && window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2 - shift.x <= window.map.MAP_WIDTH
-        && window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT + window.map.MAP_PIN_CURSOR_HEIGHT - shift.y >= 130
-        && window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT + window.map.MAP_PIN_CURSOR_HEIGHT - shift.y <= 630
-      ) {
+      var currentX = window.map.mainPin.offsetLeft - shift.x;
+      var currentY = window.map.mainPin.offsetTop - shift.y;
 
-        window.map.mainPin.style.left = (window.map.mainPin.offsetLeft - shift.x) + 'px';
-        window.map.mainPin.style.top = (window.map.mainPin.offsetTop - shift.y) + 'px';
+      var minX = Math.floor(window.map.MAP_PIN_BTN_WIDTH / -2);
+      var maxX = window.map.MAP_WIDTH - Math.round(window.map.MAP_PIN_BTN_WIDTH / 2);
+      var minY = LOCATION_Y_MIN - window.map.MAP_PIN_BTN_HEIGHT - window.map.MAP_PIN_CURSOR_HEIGHT;
+      var maxY = LOCATION_Y_MAX - window.map.MAP_PIN_BTN_HEIGHT - window.map.MAP_PIN_CURSOR_HEIGHT;
 
-        newLocation = {
-          x: window.map.mainPin.offsetLeft + Math.floor(window.map.MAP_PIN_BTN_WIDTH / 2) - shift.x,
-          y: window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT - shift.y
-        };
-
-        window.form.renderAddress(true, newLocation);
+      if (currentX < 0) {
+        currentX = minX;
+      } else if (currentX > maxX) {
+        currentX = maxX;
+      } else {
+        currentX = window.map.mainPin.offsetLeft - shift.x;
       }
-      shift.x = 0;
-      shift.y = 0;
+
+      if (currentY < minY) {
+        currentY = minY;
+      } else if (currentY > maxY) {
+        currentY = maxY;
+      } else {
+        currentY = window.map.mainPin.offsetTop - shift.y;
+      }
+
+      window.map.mainPin.style.left = currentX + 'px';
+      window.map.mainPin.style.top = currentY + 'px';
+
+      newLocation = {
+        x: currentX + Math.round(window.map.MAP_PIN_BTN_WIDTH / 2),
+        y: currentY + window.map.MAP_PIN_BTN_HEIGHT
+      };
+
+      window.form.renderAddress(true, newLocation);
     };
 
     var onMouseUp = function (upEvt) {

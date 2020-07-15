@@ -61,11 +61,11 @@
   var getFilteredAdverts = function (ads) {
     var filteredAdverts = [];
     for (var i = 0; i < ads.length; i++) {
-      if (checkfilterItem(filterHousingType, ads[i].offer, 'type')
-        && checkfilterItem(filterRoomNumber, ads[i].offer, 'rooms')
-        && checkfilterItem(filterGuestCapacity, ads[i].offer, 'guests')
-        && checkPrice(ads[i])
-        && checkFeatures(ads[i])) {
+      if (checkfilterItem(filterHousingType, ads[i].offer, 'type') &&
+        checkfilterItem(filterRoomNumber, ads[i].offer, 'rooms') &&
+        checkfilterItem(filterGuestCapacity, ads[i].offer, 'guests') &&
+        checkPrice(ads[i]) &&
+        checkFeatures(ads[i])) {
         filteredAdverts.push(ads[i]);
       }
       if (filteredAdverts.length === MAX_PIN_ON_MAP_QUANTITY) {
@@ -97,23 +97,23 @@
   // Обработчик изменения фильтров
   var onFilterChange = function () {
     window.cardPopup.removeCard();
-    window.pins.removePins();
-    window.util.debounce(window.pins.addPins(getFilteredAdverts(window.ads)));
+    window.pins.removePin();
+    window.pins.addPin(getFilteredAdverts(window.ads));
   };
 
-  filterForm.addEventListener('change', onFilterChange);
+  filterForm.addEventListener('change', window.util.debounce(onFilterChange));
 
   // Блокировка фильтров
   var filterDisabled = function () {
     resetFilter();
     toggleDisabledAttributeFilters(true, filterFieldset, filterSelect);
-    filterForm.removeEventListener('change', onFilterChange);
+    filterForm.removeEventListener('change', window.util.debounce(onFilterChange));
   };
 
   // Разблокировка фильтров
   var filterEnabled = function () {
     toggleDisabledAttributeFilters(false, filterFieldset, filterSelect);
-    filterForm.addEventListener('change', onFilterChange);
+    filterForm.addEventListener('change', window.util.debounce(onFilterChange));
   };
 
 

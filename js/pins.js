@@ -75,10 +75,10 @@
   window.pins = {
     PIN_WIDTH: PIN_WIDTH,
     PIN_HEIGHT: PIN_HEIGHT,
-    addPins: addPins,
-    onSuccessAddPins: onSuccessAddPins,
-    onErrorAddPins: onErrorAddPins,
-    removePins: removePins,
+    addPin: addPins,
+    onSuccessAddPin: onSuccessAddPins,
+    onErrorAddPin: onErrorAddPins,
+    removePin: removePins,
     removeActiveClassPin: removeActiveClassPin
   };
 

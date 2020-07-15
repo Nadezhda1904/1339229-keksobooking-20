@@ -22,33 +22,33 @@
     cardBlock.querySelector('.popup__photos').innerHTML = '';
     cardBlock.querySelector('.popup__avatar').src = adv.author.avatar;
 
-    renderFeature(cardBlock, adv);
-    renderPhotos(cardBlock, adv);
+    renderFeature(cardBlock, adv.offer.features);
+    renderPhotos(cardBlock, adv.offer.photos);
 
     return cardBlock;
   };
 
   var renderFeature = function (template, adv) {
-    for (var i = 0; i < adv.offer.features.length; i++) {
-      if (adv.offer.features.length === 0) {
+    adv.forEach(function (ad) {
+      if (ad.length === 0) {
         template.querySelector('.popup__features').style = 'display: none';
       } else {
         var cardBlockFeature = document.createElement('li');
-        cardBlockFeature.classList.add('popup__feature', 'popup__feature--' + adv.offer.features[i]);
+        cardBlockFeature.classList.add('popup__feature', 'popup__feature--' + ad);
         template.querySelector('.popup__features').append(cardBlockFeature);
       }
-    }
+    });
   };
 
   var renderPhotos = function (template, adv) {
-    for (var i = 0; i < adv.offer.photos.length; i++) {
+    adv.forEach(function (ad) {
       var cardBlockPhoto = document.createElement('img');
-      cardBlockPhoto.src = adv.offer.photos[i];
+      cardBlockPhoto.src = ad;
       cardBlockPhoto.width = 45;
       cardBlockPhoto.height = 40;
       template.querySelector('.popup__photos').appendChild(cardBlockPhoto);
       cardBlockPhoto.classList.add('popup__photo');
-    }
+    });
   };
 
   window.cardRender = {

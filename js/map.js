@@ -32,14 +32,14 @@
     mainPin.addEventListener('mouseup', onMainPinMouse);
     mainPin.addEventListener('keydown', onMainPinEnter);
     getMainPinDefault();
-    window.pins.removePins();
+    window.pins.removePin();
     window.cardPopup.removeCard();
   };
 
   var activateMap = function () {
     mainPin.removeEventListener('mouseup', onMainPinMouse);
     mainPin.removeEventListener('keydown', onMainPinEnter);
-    window.backend.load(window.pins.onSuccessAddPins, window.pins.onErrorAddPins);
+    window.backend.load(window.pins.onSuccessAddPin, window.pins.onErrorAddPin);
   };
 
   mainPin.addEventListener('mouseup', onMainPinMouse);
@@ -53,7 +53,7 @@
     MAP_PIN_BTN_HEIGHT: MAP_PIN_BTN_HEIGHT,
     MAP_PIN_CURSOR_HEIGHT: MAP_PIN_CURSOR_HEIGHT,
     mainPin: mainPin,
-    deactivateMap: deactivateMap,
-    activateMap: activateMap
+    deactivate: deactivateMap,
+    activate: activateMap
   };
 })();
