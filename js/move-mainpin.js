@@ -29,10 +29,10 @@
       var currentX = window.map.mainPin.offsetLeft - shift.x;
       var currentY = window.map.mainPin.offsetTop - shift.y;
 
-      var minX = Math.floor(window.map.MAP_PIN_BTN_WIDTH / -2);
-      var maxX = window.map.MAP_WIDTH - Math.round(window.map.MAP_PIN_BTN_WIDTH / 2);
-      var minY = LOCATION_Y_MIN - window.map.MAP_PIN_BTN_HEIGHT - window.map.MAP_PIN_CURSOR_HEIGHT;
-      var maxY = LOCATION_Y_MAX - window.map.MAP_PIN_BTN_HEIGHT - window.map.MAP_PIN_CURSOR_HEIGHT;
+      var minX = Math.floor(window.map.MAIN_PIN_WIDTH / -2);
+      var maxX = window.map.WIDTH - Math.round(window.map.MAIN_PIN_WIDTH / 2);
+      var minY = LOCATION_Y_MIN - window.map.MAIN_PIN_HEIGHT - window.map.MAIN_PIN_CURSOR_HEIGHT;
+      var maxY = LOCATION_Y_MAX - window.map.MAIN_PIN_HEIGHT - window.map.MAIN_PIN_CURSOR_HEIGHT;
 
       if (currentX < 0) {
         currentX = minX;
@@ -54,8 +54,8 @@
       window.map.mainPin.style.top = currentY + 'px';
 
       newLocation = {
-        x: currentX + Math.round(window.map.MAP_PIN_BTN_WIDTH / 2),
-        y: currentY + window.map.MAP_PIN_BTN_HEIGHT
+        x: currentX + Math.round(window.map.MAIN_PIN_WIDTH / 2),
+        y: currentY + window.map.MAIN_PIN_HEIGHT
       };
 
       window.form.renderAddress(true, newLocation);
@@ -73,9 +73,5 @@
   };
 
   window.map.mainPin.addEventListener('mousedown', onMainPinMouseMove);
-
-  window.moveMainPin = {
-    onMainPinMouseMove: onMainPinMouseMove
-  };
 
 })();

@@ -96,7 +96,7 @@
 
   // Обработчик изменения фильтров
   var onFilterChange = function () {
-    window.cardPopup.removeCard();
+    window.popup.removeCard();
     window.pins.removePin();
     window.pins.addPin(getFilteredAdverts(window.ads));
   };

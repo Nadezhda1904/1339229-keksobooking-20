@@ -43,14 +43,14 @@
     if (card) {
       closeCard();
     }
-    card = mapPin.insertAdjacentElement('afterEnd', window.cardRender.createCard(ad));
+    card = mapPin.insertAdjacentElement('afterEnd', window.renderCards.createCard(ad));
     cardClose = card.querySelector('.popup__close');
     cardClose.addEventListener('click', onCardCloseEnter);
     document.addEventListener('keydown', onCardEscPress);
     document.addEventListener('keydown', onCardEnterPress);
   };
 
-  window.cardPopup = {
+  window.popup = {
     mapPin: mapPin,
     removeCard: removeCard,
     openCard: openCard

@@ -31,7 +31,7 @@
     pin.querySelector('img').alt = add.offer.title;
     // Обработчик для показа объявления по клику на пин
     pin.addEventListener('click', function () {
-      window.cardPopup.openCard(add);
+      window.popup.openCard(add);
       addActiveClassPin(pin);
     });
 
@@ -43,7 +43,7 @@
     adverts.forEach(function (adv) {
       pinsFragment.appendChild(generatePin(adv));
     });
-    window.cardPopup.mapPin.appendChild(pinsFragment);
+    window.popup.mapPin.appendChild(pinsFragment);
   };
 
   window.ads = [];

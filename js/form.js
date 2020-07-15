@@ -28,13 +28,13 @@
 
   // Добавляет координаты адреса на страницу
   var location = {
-    x: Math.round(window.map.mainPin.offsetLeft + window.map.MAP_PIN_BTN_WIDTH / 2),
-    y: Math.round(window.map.mainPin.offsetTop + window.map.MAP_PIN_BTN_HEIGHT / 2)
+    x: Math.round(window.map.mainPin.offsetLeft + window.map.MAIN_PIN_WIDTH / 2),
+    y: Math.round(window.map.mainPin.offsetTop + window.map.MAIN_PIN_HEIGHT / 2)
   };
 
   function renderAddress(isPageActive, coord) {
     if (isPageActive) {
-      adFormAddress.value = coord.x + ', ' + (coord.y + window.map.MAP_PIN_CURSOR_HEIGHT);
+      adFormAddress.value = coord.x + ', ' + (coord.y + window.map.MAIN_PIN_CURSOR_HEIGHT);
     } else {
       adFormAddress.value = coord.x + ', ' + coord.y;
     }

@@ -51,7 +51,7 @@
     });
   };
 
-  window.cardRender = {
+  window.renderCards = {
     createCard: createCard,
   };
 

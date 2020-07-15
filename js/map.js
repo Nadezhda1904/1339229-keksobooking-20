@@ -3,9 +3,9 @@
 (function () {
   var MAP_WIDTH = document.querySelector('.map').offsetWidth;
   var MAP_HEIGHT = document.querySelector('.map').offsetHeight;
-  var MAP_PIN_BTN_WIDTH = document.querySelector('.map__pin--main').offsetWidth;
-  var MAP_PIN_BTN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
-  var MAP_PIN_CURSOR_HEIGHT = 22;
+  var MAIN_PIN_WIDTH = document.querySelector('.map__pin--main').offsetWidth;
+  var MAIN_PIN_HEIGHT = document.querySelector('.map__pin--main').offsetHeight;
+  var MAIN_PIN_CURSOR_HEIGHT = 22;
   var MAIN_PIN_DEFAULT = 'left: 570px; top: 375px;';
 
   var mainPin = document.querySelector('.map__pin--main');
@@ -33,7 +33,7 @@
     mainPin.addEventListener('keydown', onMainPinEnter);
     getMainPinDefault();
     window.pins.removePin();
-    window.cardPopup.removeCard();
+    window.popup.removeCard();
   };
 
   var activateMap = function () {
@@ -47,11 +47,11 @@
 
 
   window.map = {
-    MAP_WIDTH: MAP_WIDTH,
-    MAP_HEIGHT: MAP_HEIGHT,
-    MAP_PIN_BTN_WIDTH: MAP_PIN_BTN_WIDTH,
-    MAP_PIN_BTN_HEIGHT: MAP_PIN_BTN_HEIGHT,
-    MAP_PIN_CURSOR_HEIGHT: MAP_PIN_CURSOR_HEIGHT,
+    WIDTH: MAP_WIDTH,
+    HEIGHT: MAP_HEIGHT,
+    MAIN_PIN_WIDTH: MAIN_PIN_WIDTH,
+    MAIN_PIN_HEIGHT: MAIN_PIN_HEIGHT,
+    MAIN_PIN_CURSOR_HEIGHT: MAIN_PIN_CURSOR_HEIGHT,
     mainPin: mainPin,
     deactivate: deactivateMap,
     activate: activateMap
